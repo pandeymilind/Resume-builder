@@ -1310,7 +1310,7 @@ input[aria-invalid="true"] {
 .t-classic h3 { color: var(--ink); border-bottom: 1px solid var(--ink); }
 
 /* Template 2: Modern */
-.t-modern .inner { padding-top: 0; }
+.t-modern .inner { padding-top: 0 !important; }
 .t-modern header {
   margin: 0 -46px;
   padding: 32px 46px 20px;
@@ -1319,8 +1319,28 @@ input[aria-invalid="true"] {
 }
 .t-modern.d-compact header { margin: 0 -40px; padding: 24px 40px 16px; }
 .t-modern.d-relaxed header { margin: 0 -54px; padding: 42px 54px 26px; }
+.t-modern.d-comfort header { margin: 0 -60px; padding: 46px 60px 28px; }
 .t-modern header .ttl, .t-modern header .contact { color: var(--paper-on); opacity: 0.9; }
 .t-modern header .empty { color: var(--paper-on); opacity: 0.6; }
+
+/* Density Mode 4: Comfort (Original classic editorial proportions) */
+.paper.d-comfort { font-size: 13.5px; line-height: 1.5; }
+.paper.d-comfort .inner { padding: 54px 60px; }
+.paper.d-comfort h1 { font-size: 36px; line-height: 1.1; }
+.paper.d-comfort .ttl { font-size: 16px; margin-top: 5px; }
+.paper.d-comfort .contact { margin-top: 10px; font-size: 12.5px; gap: 3px 16px; }
+.paper.d-comfort h3 { font-size: 11.5px; letter-spacing: 0.14em; margin: 22px 0 8px; padding-bottom: 4px; }
+.paper.d-comfort p { margin: 0 0 6px; }
+.paper.d-comfort ul, .paper.d-comfort ol { margin: 4px 0 0; padding-left: 18px; }
+.paper.d-comfort li { margin-bottom: 2px; }
+.paper.d-comfort .ent { margin-bottom: 12px; }
+.paper.d-comfort .dt, .paper.d-comfort .sub, .paper.d-comfort .lnk { font-size: 12.5px; }
+.paper.d-comfort .chips { gap: 6px; }
+.paper.d-comfort .chip { padding: 1px 9px; font-size: 12.5px; }
+.paper.d-comfort .inline-list, .paper.d-comfort .cat-list { font-size: 13px; }
+.t-sidebar.d-comfort .side { padding: 54px 26px; }
+.t-sidebar.d-comfort .main { padding: 54px 44px 54px 40px; }
+.t-sidebar.d-comfort .main h1 { font-size: 32px; }
 
 /* Template 3: Sidebar */
 .t-sidebar .wrap2 { display: grid; grid-template-columns: 224px 1fr; min-height: 1123px; }
@@ -1721,7 +1741,7 @@ input[aria-invalid="true"] {
   var TEMPLATES = [["classic", "Classic"], ["modern", "Modern"], ["sidebar", "Sidebar"]];
   var COLORS = [["#1f6f5c", "Teal"], ["#3a4db7", "Indigo"], ["#b3322e", "Crimson"], ["#334155", "Slate"], ["#6d28d9", "Plum"], ["#9a5b00", "Amber"]];
   var FONTS = [["sans", "Sans"], ["serif", "Serif"]];
-  var DENSITIES = [["compact", "Compact"], ["standard", "Standard"], ["relaxed", "Relaxed"]];
+  var DENSITIES = [["compact", "Compact"], ["standard", "Standard"], ["relaxed", "Relaxed"], ["comfort", "Comfort"]];
   var SKILL_STYLES = [
     { k: "boxes", t: "Pill Boxes", d: "Individual bordered skill badges" },
     { k: "inline", t: "Inline Text", d: "Clean single-line list separated by ·" },
@@ -1798,7 +1818,8 @@ input[aria-invalid="true"] {
   function normalize(s) {
     var b = makeBlank();
     s.hide = s.hide || {};
-    s.density = (s.density === "compact" || s.density === "relaxed") ? s.density : "standard";
+    if (s.density === "spacious") s.density = "comfort";
+    s.density = (s.density === "compact" || s.density === "relaxed" || s.density === "comfort") ? s.density : "standard";
     s.skillsStyle = (s.skillsStyle === "inline" || s.skillsStyle === "grouped") ? s.skillsStyle : "boxes";
     s.customSections = (s.customSections && typeof s.customSections === "object") ? s.customSections : {};
     Object.keys(s.customSections).forEach(function (cid) {
