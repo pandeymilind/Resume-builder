@@ -433,10 +433,13 @@ input[aria-invalid="true"] { border-color: var(--warn); }
 
   /* ---------- Editor: menu ---------- */
   function renderNav() {
-    nav.innerHTML = NAV.map(function (n, i) {
-      return (i === 5 ? '<span class="div" aria-hidden="true"></span>' : "") +
-        '<button type="button" data-nav="' + n[0] + '" aria-current="' + (state.active === n[0]) + '">' + n[1] + (n[0] === "check" ? '<span class="badge" id="navScore"></span>' : "") + "</button>";
+    var items = [["basics", "Personal Details"]].concat(state.order.map(function (id) { return [id, SEC[id].label]; })).concat([["check", "Resume check"]]);
+    nav.innerHTML = items.map(function (n) {
+      var badge = n[0] === "check" ? '<span class="badge" id="navScore"></span>' : (state.hide[n[0]] ? '<span class="badge">hidden</span>' : "");
+      return (n[0] === "check" ? '<span class="div" aria-hidden="true"></span>' : "") +
+        '<button type="button" data-nav="' + n[0] + '" aria-current="' + (state.active === n[0]) + '">' + n[1] + badge + "</button>";
     }).join("");
+    renderScore();
   }
   nav.addEventListener("click", function (e) {
     var b = e.target.closest("[data-nav]");
@@ -608,11 +611,11 @@ input[aria-invalid="true"] { border-color: var(--warn); }
       var from = state.order.indexOf(s), to = act === "up" ? from - 1 : from + 1;
       if (to < 0 || to >= state.order.length) return;
       state.order.splice(to, 0, state.order.splice(from, 1)[0]);
-      renderPanel(); update();
+      renderNav(); renderPanel(); update();
       var keep = editor.querySelector('[data-act="' + act + '"]:not([disabled])') || editor.querySelector('[data-act="' + (act === "up" ? "down" : "up") + '"]:not([disabled])');
       if (keep) keep.focus();
     } else if (act === "hide") {
-      state.hide[s] = !state.hide[s]; renderPanel(); update();
+      state.hide[s] = !state.hide[s]; renderNav(); renderPanel(); update();
     } else if (act === "add") {
       state[s].push(blankItem(s)); renderPanel(); update();
       var ents = editor.querySelectorAll(".entry"), last = ents[ents.length - 1];
