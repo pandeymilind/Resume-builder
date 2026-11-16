@@ -232,7 +232,17 @@ button { cursor: pointer; }
   gap: 6px;
   font-size: 12px;
   color: var(--muted);
-  padding-left: 4px;
+  padding: 4px 9px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all 0.15s ease;
+}
+
+.save-status:hover {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--fg);
 }
 
 .save-dot {
@@ -384,6 +394,107 @@ button { cursor: pointer; }
   background: var(--surface);
   color: var(--fg);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Workspace & Backup Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(15, 18, 17, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 460px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-float);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-header h2 {
+  font: 700 16px/1.2 var(--font-ui);
+  margin: 0;
+  color: var(--fg);
+}
+
+.modal-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.modal-actions .btn {
+  width: 100%;
+  justify-content: center;
+  padding: 10px 14px;
+}
+
+.storage-viewer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.storage-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.storage-meta code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--fg);
+}
+
+.storage-code {
+  width: 100%;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11.5px;
+  line-height: 1.45;
+  background: var(--surface-subtle);
+  color: var(--fg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  resize: vertical;
+  min-height: 180px;
+  max-height: 280px;
+}
+
+.storage-bar {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.storage-bar .btn {
+  flex: 1;
 }
 
 /* ==========================================================================
@@ -1383,7 +1494,7 @@ input[aria-invalid="true"] {
   .paper { width: 100% !important; }
   .paper, .t-sidebar .wrap2 { min-height: 1122px !important; }
   .t-sidebar .wrap2 { grid-template-columns: 236px 1fr !important; }
-  .studio-header, #editPane, .studio-toolbar, #txtbox, #pdfnote, #toast, .pbreak {
+  .studio-header, .studio-footer, #editPane, .studio-toolbar, #txtbox, #pdfnote, #toast, .pbreak {
     display: none !important;
   }
   .workspace {
@@ -1413,6 +1524,71 @@ input[aria-invalid="true"] {
 }
 
 /* ==========================================================================
+   10B. STUDIO FOOTER
+   ========================================================================== */
+.studio-footer {
+  max-width: 1580px;
+  margin: 32px auto 0;
+  padding: 18px max(16px, env(safe-area-inset-left, 16px)) 8px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.footer-brand svg {
+  width: 15px;
+  height: 15px;
+  color: var(--accent);
+}
+
+.footer-sep {
+  color: var(--line-strong);
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.footer-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.footer-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ==========================================================================
    11. RESPONSIVE BREAKPOINTS
    ========================================================================== */
 @media (min-width: 1180px) {
@@ -1435,11 +1611,72 @@ input[aria-invalid="true"] {
 }
 
 @media (max-width: 899px) {
-  .mobile-tabs { display: flex; }
-  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .header-inner {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+  .studio-footer {
+    margin-top: 24px;
+    padding: 16px 12px 6px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .brand-wrap {
+    margin-right: 0;
+  }
+  .brand {
+    font-size: 18px;
+  }
+  .mobile-tabs {
+    display: flex;
+    margin-left: auto;
+  }
+  .header-actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .header-actions::-webkit-scrollbar {
+    display: none;
+  }
+  .header-actions .btn,
+  .header-actions .score-pill {
+    flex: none;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .header-actions .btn.icon-only {
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+  }
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 14px 12px 0;
+    gap: 14px;
+  }
   .workspace.show-edit #previewPane,
   .workspace.show-preview #editPane { display: none; }
   .preview-column { position: static; }
+  .editor-card { padding: 14px; }
+  .studio-toolbar {
+    padding: 8px 10px;
+    gap: 8px 12px;
+  }
+  .tool-group {
+    flex-wrap: wrap;
+  }
+  .page-meta {
+    margin-left: 0;
+  }
+  .desk-stage {
+    padding: 14px 8px;
+  }
   .form-grid, .format-grid { grid-template-columns: 1fr; }
   .brand-tag, .save-status { display: none; }
 }
@@ -1465,10 +1702,10 @@ input[aria-invalid="true"] {
         Plainleaf
       </div>
       <span class="brand-tag">Resume Builder</span>
-      <span class="save-status" id="saveStatus" aria-live="polite">
+      <button type="button" class="save-status" id="saveStatus" title="Inspect stored local data" aria-live="polite">
         <span class="save-dot"></span>
         <span id="saveLabel">Saved locally</span>
-      </span>
+      </button>
     </div>
 
     <div class="mobile-tabs" role="tablist" aria-label="Workspace view">
@@ -1489,6 +1726,13 @@ input[aria-invalid="true"] {
         <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
         </svg>
+      </button>
+
+      <button type="button" class="btn" id="backupBtn" title="Manage backups, sample data, or reset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+        </svg>
+        Backup
       </button>
 
       <button type="button" class="btn" id="copyBtn">
@@ -1559,6 +1803,51 @@ input[aria-invalid="true"] {
     </div>
   </section>
 </main>
+
+<!-- Studio Footer -->
+<footer class="studio-footer">
+  <div class="footer-left">
+    <span class="footer-brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+      </svg>
+      Plainleaf Resume Builder
+    </span>
+    <span class="footer-sep" aria-hidden="true">·</span>
+    <span>© 2026 Plainleaf. All rights reserved.</span>
+    <span class="footer-sep" aria-hidden="true">·</span>
+    <span>100% private — stored locally in your browser.</span>
+  </div>
+  <div class="footer-right">
+    <button type="button" class="footer-link" id="footerCheckBtn">Quality Check</button>
+    <button type="button" class="footer-link" id="footerBackupBtn">Backup & Reset</button>
+    <button type="button" class="footer-link" id="footerTopBtn">Back to top ↑</button>
+  </div>
+</footer>
+
+<!-- Workspace & Backup Modal -->
+<div class="modal-backdrop" id="backupModal" hidden role="dialog" aria-modal="true" aria-labelledby="backupModalTitle">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2 id="backupModalTitle">Workspace & Backup</h2>
+      <button type="button" class="icon-btn" id="closeBackupBtn" aria-label="Close modal">✕</button>
+    </div>
+    <p class="helper-note" style="margin-bottom:0">Your edits auto-save directly to your browser's local storage. You can also export a JSON backup file to reload later via <strong>Import Resume</strong>.</p>
+    <div class="modal-actions" id="backupModalActions"></div>
+    <div class="storage-viewer" id="storageViewer" hidden>
+      <div class="storage-meta">
+        <span>Key: <code>plainleaf.v2</code></span>
+        <span id="storageSize">0 KB</span>
+      </div>
+      <textarea class="storage-code" id="storageJson" spellcheck="false" aria-label="Stored local JSON data"></textarea>
+      <div class="storage-bar">
+        <button type="button" class="btn sm" id="copyStorageBtn">Copy JSON</button>
+        <button type="button" class="btn sm primary" id="applyStorageBtn">Apply Edited JSON</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
@@ -2014,12 +2303,7 @@ input[aria-invalid="true"] {
   function renderPanel() {
     var id = state.active, h = "";
     if (id === "check") {
-      h = '<div class="editor-card"><div class="card-header"><div class="card-title-group">' + ICONS.check + '<h2>Resume Quality Check</h2></div></div><div id="score"></div></div>' +
-        '<div class="editor-card"><div class="card-header"><div class="card-title-group"><h2>Workspace & Backup</h2></div></div>' +
-        '<p class="helper-note">Your edits auto-save directly to your browser\'s local storage. You can also export a JSON backup file to reload later via <strong>Import Resume</strong>.</p>' +
-        '<div style="display:flex; gap:8px; flex-wrap:wrap">' +
-        '<button type="button" class="btn sm" data-act="export-json">Export JSON backup</button>' +
-        armBtn("sample", "all", "Load sample resume") + armBtn("blank", "all", "Clear all & start blank") + "</div></div>";
+      h = '<div class="editor-card"><div class="card-header"><div class="card-title-group">' + ICONS.check + '<h2>Resume Quality Check</h2></div></div><div id="score"></div></div>';
       editor.innerHTML = h;
       renderScore();
       return;
@@ -2518,12 +2802,14 @@ input[aria-invalid="true"] {
   }
 
   function fit() {
-    var availW = Math.max(260, (stage.clientWidth || 794) - 32);
+    var padX = window.innerWidth < 900 ? 16 : 32;
+    var padY = window.innerWidth < 900 ? 28 : 48;
+    var availW = Math.max(240, (stage.clientWidth || 794) - padX);
     var sc = Math.min(1, availW / 794);
     paper.style.transform = "scale(" + sc + ")";
     paper.style.marginLeft = Math.max(0, (availW - 794 * sc) / 2) + "px";
     var h = paper.offsetHeight;
-    stage.style.height = (Math.ceil(h * sc) + 48) + "px";
+    stage.style.height = (Math.ceil(h * sc) + padY) + "px";
     paper.querySelectorAll(".pbreak").forEach(function (n) { n.remove(); });
     var pages = Math.max(1, Math.ceil((h - 2) / PAGE_H));
     for (var pg = 1; pg < pages; pg++) {
@@ -2854,64 +3140,126 @@ input[aria-invalid="true"] {
     return normalize(next);
   }
 
-  async function extractPdfText(arrayBuffer) {
-    if (!window.pdfjsLib) throw new Error("PDF parser library unavailable");
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-    var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    var pagesText = [];
-    for (var pNum = 1; pNum <= pdf.numPages; pNum++) {
-      var page = await pdf.getPage(pNum);
-      var content = await page.getTextContent();
-      var lastY = null, line = "", linesOut = [];
-      content.items.forEach(function (item) {
-        var y = item.transform ? Math.round(item.transform[5]) : 0;
-        if (lastY !== null && Math.abs(y - lastY) > 4) {
-          if (line.trim()) linesOut.push(line.trim());
-          line = item.str;
-        } else {
-          line += (line && !/\s$/.test(line) && !/^\s/.test(item.str) ? " " : "") + item.str;
-        }
-        lastY = y;
-      });
-      if (line.trim()) linesOut.push(line.trim());
-      pagesText.push(linesOut.join("\n"));
-    }
-    return pagesText.join("\n");
+  /* ---------- Workspace & Backup Modal ---------- */
+  var backupModal = $("backupModal"), backupActions = $("backupModalActions"), storageViewer = $("storageViewer"), storageJson = $("storageJson");
+  var showStoredData = false;
+
+  function syncStorageViewer() {
+    if (!storageViewer || !storageJson) return;
+    storageViewer.hidden = !showStoredData;
+    if (!showStoredData) return;
+    var raw = "";
+    try { raw = localStorage.getItem(KEY) || JSON.stringify(state); } catch (e) { raw = JSON.stringify(state); }
+    var pretty = raw;
+    try { pretty = JSON.stringify(JSON.parse(raw), null, 2); } catch (e) {}
+    storageJson.value = pretty;
+    var bytes = new Blob([raw]).size;
+    var sizeEl = $("storageSize");
+    if (sizeEl) sizeEl.textContent = (bytes < 1024 ? bytes + " B" : (bytes / 1024).toFixed(1) + " KB");
   }
 
-  $("importBtn").addEventListener("click", function () {
-    $("importFile").value = "";
-    $("importFile").click();
+  function renderBackupModal() {
+    if (!backupActions) return;
+    backupActions.innerHTML =
+      '<button type="button" class="btn" data-mact="toggle-storage" aria-pressed="' + showStoredData + '">' + (showStoredData ? "Hide stored local data" : "View stored local data") + "</button>" +
+      '<button type="button" class="btn" data-mact="export-json">Export JSON backup</button>' +
+      armBtnModal("sample", "all", "Load sample resume") +
+      armBtnModal("blank", "all", "Clear all & start blank");
+    syncStorageViewer();
+  }
+  function armBtnModal(act, id, label) {
+    var on = armed.key === act + ":" + id;
+    return '<button type="button" class="btn' + (on ? " warn" : "") + '" data-mact="' + act + '" data-s="' + id + '">' + (on ? "Click again to confirm" : label) + "</button>";
+  }
+  function openBackupModal(openStorage) {
+    armed.key = null;
+    showStoredData = !!openStorage;
+    renderBackupModal();
+    backupModal.hidden = false;
+  }
+  function closeBackupModal() {
+    armed.key = null;
+    showStoredData = false;
+    backupModal.hidden = true;
+  }
+  $("backupBtn").addEventListener("click", function () { openBackupModal(false); });
+  $("saveStatus").addEventListener("click", function () { openBackupModal(true); });
+  $("footerBackupBtn").addEventListener("click", function () { openBackupModal(false); });
+  $("footerCheckBtn").addEventListener("click", function () {
+    $("headerScoreBtn").click();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  $("footerTopBtn").addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  $("closeBackupBtn").addEventListener("click", closeBackupModal);
+
+  $("copyStorageBtn").addEventListener("click", function () {
+    var txt = storageJson.value;
+    function fallback() {
+      storageJson.focus();
+      storageJson.select();
+      try { if (document.execCommand("copy")) { toast("Copied stored JSON data"); return; } } catch (e) {}
+      toast("Select the JSON text and copy it");
+    }
+    try { navigator.clipboard.writeText(txt).then(function () { toast("Copied stored JSON data"); }, fallback); }
+    catch (e) { fallback(); }
   });
 
-  $("importFile").addEventListener("change", async function (e) {
-    var file = e.target.files && e.target.files[0];
-    if (!file) return;
+  $("applyStorageBtn").addEventListener("click", function () {
     try {
-      if (/\.json$/i.test(file.name)) {
-        var jsonText = await file.text();
-        var parsedJson = JSON.parse(jsonText);
-        if (parsedJson && parsedJson.basics) {
-          replaceState(parsedJson);
-          toast("Loaded JSON resume: " + file.name);
-          return;
-        }
+      var parsed = JSON.parse(storageJson.value);
+      if (!parsed || typeof parsed !== "object" || !parsed.basics) {
+        toast("Invalid resume JSON structure");
+        return;
       }
-      var extracted = "";
-      if (/\.pdf$/i.test(file.name) || file.type === "application/pdf") {
-        toast("Reading PDF resume…");
-        var buf = await file.arrayBuffer();
-        extracted = await extractPdfText(buf);
-      } else {
-        extracted = await file.text();
-      }
-      var importedState = parseResumeText(extracted);
-      replaceState(importedState);
-      toast("Imported resume — review & refine each section");
-    } catch (err) {
-      console.error(err);
-      toast("Could not parse file. Try a text-based PDF, TXT, or JSON.");
+      replaceState(parsed);
+      syncStorageViewer();
+      toast("Applied updated JSON data");
+    } catch (e) {
+      toast("Invalid JSON syntax: " + e.message);
     }
+  });
+
+  backupModal.addEventListener("click", function (e) {
+    if (e.target === backupModal) { closeBackupModal(); return; }
+    var b = e.target.closest("[data-mact]");
+    if (!b) return;
+    var act = b.dataset.mact, s = b.dataset.s;
+    if (act === "toggle-storage") {
+      showStoredData = !showStoredData;
+      renderBackupModal();
+      return;
+    }
+    if (act === "export-json") {
+      var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = ((state.basics.name || "resume").trim().replace(/\s+/g, "_") + "_plainleaf.json");
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+      toast("Downloaded JSON resume backup");
+      closeBackupModal();
+      return;
+    }
+    if (act === "sample" || act === "blank") {
+      var key = act + ":" + s;
+      if (armed.key === key) {
+        clearTimeout(armed.timer);
+        armed.key = null;
+        replaceState(act === "sample" ? SAMPLE : makeBlank());
+        closeBackupModal();
+        toast(act === "sample" ? "Sample resume loaded" : "Blank resume ready");
+      } else {
+        armed.key = key;
+        clearTimeout(armed.timer);
+        armed.timer = setTimeout(function () { armed.key = null; renderBackupModal(); }, 3500);
+        renderBackupModal();
+      }
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && !backupModal.hidden) closeBackupModal();
   });
 
   /* ---------- Mobile Tabs ---------- */
