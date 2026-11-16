@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 /* ==========================================================================
    1. DESIGN TOKENS & THEME SYSTEM
@@ -1240,8 +1241,8 @@ input[aria-invalid="true"] {
   min-height: 1123px;
   background: var(--paper);
   color: var(--ink);
-  font-size: 13.5px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.4;
   transform-origin: 0 0;
   position: relative;
 }
@@ -1249,36 +1250,59 @@ input[aria-invalid="true"] {
 .paper.f-sans { font-family: var(--font-resume-sans); }
 .paper.f-serif { font-family: var(--font-resume-serif); }
 
-.paper .inner { padding: 54px 60px; }
-.paper h1 { font-size: 36px; line-height: 1.12; margin: 0; font-weight: 700; letter-spacing: -0.015em; }
-.paper .ttl { color: var(--ra); font-size: 16px; margin-top: 5px; font-weight: 500; }
-.paper .contact { display: flex; flex-wrap: wrap; gap: 3px 16px; margin-top: 10px; color: var(--ink-muted); font-size: 12.5px; }
+.paper .inner { padding: 36px 46px; }
+.paper h1 { font-size: 28px; line-height: 1.12; margin: 0; font-weight: 700; letter-spacing: -0.015em; }
+.paper .ttl { color: var(--ra); font-size: 14px; margin-top: 3px; font-weight: 500; }
+.paper .contact { display: flex; flex-wrap: wrap; gap: 2px 14px; margin-top: 6px; color: var(--ink-muted); font-size: 11.5px; }
 .paper h3 {
-  font-size: 11.5px;
-  letter-spacing: 0.14em;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ra);
-  margin: 22px 0 8px;
-  padding-bottom: 4px;
+  margin: 13px 0 6px;
+  padding-bottom: 3px;
   border-bottom: 1.5px solid var(--ra);
   font-weight: 700;
 }
-.paper p { margin: 0 0 6px; }
-.paper ul, .paper ol { margin: 4px 0 0; padding-left: 18px; }
-.paper li { margin-bottom: 2.5px; }
+.paper p { margin: 0 0 4px; }
+.paper ul, .paper ol { margin: 3px 0 0; padding-left: 16px; }
+.paper li { margin-bottom: 1.5px; }
 .paper li p { margin: 0; }
-.paper .rich p { margin: 0 0 4px; }
-.paper .ent { margin-bottom: 12px; }
-.paper .row { display: flex; justify-content: space-between; gap: 16px; }
+.paper .rich p { margin: 0 0 3px; }
+.paper .ent { margin-bottom: 8px; }
+.paper .ent:last-child { margin-bottom: 0; }
+.paper .row { display: flex; justify-content: space-between; gap: 14px; }
 .paper .row b { font-weight: 700; }
-.paper .dt { color: var(--ink-muted); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.paper .sub { color: var(--ink-muted); font-style: italic; }
-.paper .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.paper .chip { border: 1px solid var(--ra); color: var(--ink); padding: 1.5px 9px; border-radius: 3px; font-size: 12.5px; }
-.paper .lnk { color: var(--ra); font-size: 12.5px; }
+.paper .dt { color: var(--ink-muted); font-size: 11.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.paper .sub { color: var(--ink-muted); font-style: italic; font-size: 11.5px; }
+.paper .chips { display: flex; flex-wrap: wrap; gap: 4px 5px; }
+.paper .chip { border: 1px solid var(--ra); color: var(--ink); padding: 1px 7px; border-radius: 3px; font-size: 11px; line-height: 1.35; }
+.paper .inline-list { font-size: 11.5px; line-height: 1.45; color: var(--ink); }
+.paper .inline-sep { color: var(--ra); font-weight: 700; margin: 0 5px; }
+.paper .cat-list { margin: 0; padding-left: 16px; font-size: 11.5px; }
+.paper .cat-list li { margin-bottom: 2px; }
+.paper .lnk { color: var(--ra); font-size: 11.5px; }
 .paper .empty { color: var(--ink-muted); opacity: 0.55; }
 .paper a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 .paper .lnk a, .paper .rich a { color: var(--ra); }
+
+/* Density Modes */
+.paper.d-compact { font-size: 11.2px; line-height: 1.32; }
+.paper.d-compact .inner { padding: 28px 40px; }
+.paper.d-compact h1 { font-size: 25px; }
+.paper.d-compact .ttl { font-size: 13px; margin-top: 2px; }
+.paper.d-compact .contact { margin-top: 4px; font-size: 11px; gap: 2px 12px; }
+.paper.d-compact h3 { margin: 10px 0 4px; padding-bottom: 2px; font-size: 10px; }
+.paper.d-compact .ent { margin-bottom: 6px; }
+.paper.d-compact li { margin-bottom: 1px; }
+.paper.d-compact .chips { gap: 3px 4px; }
+.paper.d-compact .chip { padding: 0.5px 6px; font-size: 10.5px; }
+
+.paper.d-relaxed { font-size: 13px; line-height: 1.48; }
+.paper.d-relaxed .inner { padding: 48px 54px; }
+.paper.d-relaxed h1 { font-size: 32px; }
+.paper.d-relaxed h3 { margin: 18px 0 7px; }
+.paper.d-relaxed .ent { margin-bottom: 11px; }
 
 /* Template 1: Classic */
 .t-classic header { text-align: center; }
@@ -1288,23 +1312,27 @@ input[aria-invalid="true"] {
 /* Template 2: Modern */
 .t-modern .inner { padding-top: 0; }
 .t-modern header {
-  margin: 0 -60px;
-  padding: 46px 60px 28px;
+  margin: 0 -46px;
+  padding: 32px 46px 20px;
   background: var(--ra);
   color: var(--paper-on);
 }
+.t-modern.d-compact header { margin: 0 -40px; padding: 24px 40px 16px; }
+.t-modern.d-relaxed header { margin: 0 -54px; padding: 42px 54px 26px; }
 .t-modern header .ttl, .t-modern header .contact { color: var(--paper-on); opacity: 0.9; }
 .t-modern header .empty { color: var(--paper-on); opacity: 0.6; }
 
 /* Template 3: Sidebar */
-.t-sidebar .wrap2 { display: grid; grid-template-columns: 236px 1fr; min-height: 1123px; }
-.t-sidebar .side { background: color-mix(in srgb, var(--ra) 11%, var(--paper)); padding: 54px 26px; }
-.t-sidebar .main { padding: 54px 44px 54px 40px; }
+.t-sidebar .wrap2 { display: grid; grid-template-columns: 224px 1fr; min-height: 1123px; }
+.t-sidebar .side { background: color-mix(in srgb, var(--ra) 11%, var(--paper)); padding: 38px 22px; }
+.t-sidebar .main { padding: 38px 36px 38px 32px; }
+.t-sidebar.d-compact .side { padding: 28px 18px; }
+.t-sidebar.d-compact .main { padding: 28px 30px 28px 26px; }
 .t-sidebar .side h3 { margin-top: 0; }
-.t-sidebar .side .contact { flex-direction: column; margin: 0 0 24px; gap: 6px; word-break: break-word; }
-.t-sidebar .side .chips { flex-direction: column; gap: 4px; }
+.t-sidebar .side .contact { flex-direction: column; margin: 0 0 18px; gap: 4px; word-break: break-word; }
+.t-sidebar .side .chips { flex-direction: column; gap: 3px; }
 .t-sidebar .side .chip { border: 0; padding: 0; }
-.t-sidebar .main h1 { font-size: 32px; }
+.t-sidebar .main h1 { font-size: 28px; }
 
 /* Page break guide line on screen */
 .pbreak {
@@ -1450,6 +1478,14 @@ input[aria-invalid="true"] {
         Copy text
       </button>
 
+      <input type="file" id="importFile" accept=".pdf,.txt,.md,.json,application/pdf,text/plain,application/json" hidden>
+      <button type="button" class="btn" id="importBtn" title="Upload an existing PDF, TXT, or JSON resume to edit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Import Resume
+      </button>
+
       <button type="button" class="btn primary" id="pdfBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
@@ -1481,6 +1517,9 @@ input[aria-invalid="true"] {
       </div>
       <div class="tool-group" id="fontGrp">
         <span class="tool-label">Type</span>
+      </div>
+      <div class="tool-group" id="denGrp">
+        <span class="tool-label">Density</span>
       </div>
       <span class="page-meta" id="pageinfo">1 page · A4</span>
     </div>
@@ -1682,41 +1721,41 @@ input[aria-invalid="true"] {
   var TEMPLATES = [["classic", "Classic"], ["modern", "Modern"], ["sidebar", "Sidebar"]];
   var COLORS = [["#1f6f5c", "Teal"], ["#3a4db7", "Indigo"], ["#b3322e", "Crimson"], ["#334155", "Slate"], ["#6d28d9", "Plum"], ["#9a5b00", "Amber"]];
   var FONTS = [["sans", "Sans"], ["serif", "Serif"]];
+  var DENSITIES = [["compact", "Compact"], ["standard", "Standard"], ["relaxed", "Relaxed"]];
+  var SKILL_STYLES = [
+    { k: "boxes", t: "Pill Boxes", d: "Individual bordered skill badges" },
+    { k: "inline", t: "Inline Text", d: "Clean single-line list separated by ·" },
+    { k: "grouped", t: "Categorized Lines", d: "One category per line (e.g. Tools: Git, SQL)" }
+  ];
 
   var createDraft = { label: "", type: "entries" };
 
-  function isCustomId(id) { return typeof id === "string" && id.indexOf("custom_") === 0; }
-  function isSectionId(id) { return !!(BUILTIN_ORDER[id] || (state && state.customSections && state.customSections[id])); }
-  function sectionLabel(id) {
-    if (id === "basics") return "Personal Details";
-    if (SEC[id]) return SEC[id].label;
-    if (state.customSections && state.customSections[id]) return state.customSections[id].label || "Untitled Section";
-    return id;
-  }
-
-  function blankCustomEntry() {
-    return { title: "", sub: "", date: "", link: "", desc: "" };
-  }
+  function isCustomId(id) { return String(id || "").indexOf("custom_") === 0; }
 
   function blankItem(id) {
-    if (isCustomId(id)) return blankCustomEntry();
     var o = {};
     SEC[id].fields.forEach(function (f) { o[f.k] = f.t === "check" ? false : ""; });
     return o;
   }
 
+  function blankCustomEntry() {
+    var o = {};
+    CUSTOM_ENTRY_FIELDS.forEach(function (f) { o[f.k] = ""; });
+    return o;
+  }
+
   function makeBlank() {
     return {
-      template: "classic", accent: "#1f6f5c", font: "sans", active: "basics", hide: {},
+      template: "classic", accent: "#1f6f5c", font: "sans", density: "standard", active: "basics", hide: {},
       order: ["experience", "education", "skills", "projects"],
       customSections: {},
       basics: { name: "", title: "", email: "", phone: "", location: "", link: "", link2: "" },
-      summary: "", experience: [blankItem("experience")], education: [blankItem("education")], skills: "", projects: []
+      summary: "", experience: [blankItem("experience")], education: [blankItem("education")], skills: "", skillsStyle: "boxes", projects: []
     };
   }
 
   var SAMPLE = {
-    template: "classic", accent: "#1f6f5c", font: "sans", active: "basics", hide: {},
+    template: "classic", accent: "#1f6f5c", font: "sans", density: "standard", active: "basics", hide: {},
     order: ["experience", "education", "skills", "projects"],
     customSections: {},
     basics: { name: "Alex Morgan", title: "Junior Data Analyst", email: "alex.morgan@example.com", phone: "+1 (555) 234-5678", location: "Austin, TX", link: "linkedin.com/in/alex-morgan", link2: "github.com/example" },
@@ -1731,6 +1770,7 @@ input[aria-invalid="true"] {
       { degree: "B.Sc. Statistics", school: "State University", start: "2020", end: "2023", score: "GPA 3.8 / 4.0", desc: "<p>Graduated with honors. Final-year project on demand forecasting for local retail.</p>" }
     ],
     skills: "SQL, Python, pandas, Power BI, Excel, Data cleaning, Dashboards, Statistics",
+    skillsStyle: "boxes",
     projects: [
       { name: "Regional Rainfall Explorer", link: "github.com/example/rainfall", desc: "<p>Interactive charts of 30 years of monthly rainfall across regional districts, built with <i>Python</i> and Plotly.</p>" }
     ]
@@ -1741,8 +1781,16 @@ input[aria-invalid="true"] {
     ["template", "accent", "font"].forEach(function (k) { if (o[k]) s[k] = o[k]; });
     Object.keys(s.basics).forEach(function (k) { if (o.basics && o.basics[k]) s.basics[k] = o.basics[k]; });
     s.summary = p(o.summary || ""); s.skills = o.skills || "";
-    if (o.experience && o.experience.length) s.experience = o.experience.map(function (x) { return { role: x.role || "", company: x.company || "", start: x.start || "", end: x.end || "", current: /^present$/i.test(x.end || ""), desc: ul(lines(x.bullets)) }; });
-    if (o.education && o.education.length) s.education = o.education.map(function (x) { return { degree: x.degree || "", school: x.school || "", start: x.start || "", end: x.end || "", score: "", desc: p(x.note || "") }; });
+    if (o.experience && o.experience.length) {
+      s.experience = o.experience.map(function (x) {
+        return { role: x.role || "", company: x.company || "", start: x.start || "", end: x.end || "", current: /^present$/i.test(x.end || ""), desc: ul(lines(x.bullets)) };
+      });
+    }
+    if (o.education && o.education.length) {
+      s.education = o.education.map(function (x) {
+        return { degree: x.degree || "", school: x.school || "", start: x.start || "", end: x.end || "", score: "", desc: p(x.note || "") };
+      });
+    }
     s.projects = (o.projects || []).map(function (x) { return { name: x.name || "", link: x.link || "", desc: p(x.desc || "") }; });
     return s;
   }
@@ -1750,12 +1798,15 @@ input[aria-invalid="true"] {
   function normalize(s) {
     var b = makeBlank();
     s.hide = s.hide || {};
+    s.density = (s.density === "compact" || s.density === "relaxed") ? s.density : "standard";
+    s.skillsStyle = (s.skillsStyle === "inline" || s.skillsStyle === "grouped") ? s.skillsStyle : "boxes";
     s.customSections = (s.customSections && typeof s.customSections === "object") ? s.customSections : {};
     Object.keys(s.customSections).forEach(function (cid) {
       var cs = s.customSections[cid];
       if (!cs || typeof cs !== "object") { delete s.customSections[cid]; return; }
       cs.label = String(cs.label || "Custom Section");
       cs.type = (cs.type === "chips" || cs.type === "rich") ? cs.type : "entries";
+      cs.chipStyle = (cs.chipStyle === "inline" || cs.chipStyle === "grouped") ? cs.chipStyle : "boxes";
       if (!Array.isArray(cs.items)) cs.items = [blankCustomEntry()];
       cs.chips = String(cs.chips || "");
       cs.rich = String(cs.rich || "");
@@ -1784,42 +1835,53 @@ input[aria-invalid="true"] {
 
   var saveTimer = null;
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
-    var st = $("saveStatus"), lb = $("saveLabel");
-    if (st && lb) {
-      st.classList.add("saving");
-      lb.textContent = "Saving…";
+    var statusEl = $("saveStatus"), labelEl = $("saveLabel");
+    if (statusEl && labelEl) {
+      statusEl.classList.add("saving");
+      labelEl.textContent = "Saving…";
       clearTimeout(saveTimer);
       saveTimer = setTimeout(function () {
-        st.classList.remove("saving");
-        lb.textContent = "Saved locally";
+        statusEl.classList.remove("saving");
+        labelEl.textContent = "Saved locally";
       }, 450);
     }
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
   }
+
   var state = load();
 
-  /* ---------- Editor: Section Navigation Rail ---------- */
-  function renderNav() {
-    var items = [["basics", "Personal Details", ICONS.basics]]
-      .concat(state.order.map(function (id) {
-        var icon = ICONS[id] || ICONS.custom;
-        return [id, sectionLabel(id), icon];
-      }))
-      .concat([
-        ["create", "Create section", ICONS.plus],
-        ["check", "Resume check", ICONS.check]
-      ]);
+  /* ---------- Editor: Navigation Rail ---------- */
+  function sectionLabel(id) {
+    if (id === "basics") return "Personal Details";
+    if (id === "check") return "Resume Check";
+    if (id === "create") return "Create Section";
+    if (SEC[id]) return SEC[id].label;
+    if (isCustomId(id) && state.customSections[id]) return state.customSections[id].label;
+    return "Section";
+  }
 
-    nav.innerHTML = items.map(function (n) {
-      var id = n[0], label = n[1], icon = n[2];
-      var badge = "";
-      if (id === "check") badge = '<span class="nav-badge" id="navScore"></span>';
-      else if (state.hide[id]) badge = '<span class="nav-badge">Hidden</span>';
-      var divider = (id === "check") ? '<span class="nav-divider" aria-hidden="true"></span>' : "";
-      var extraCls = (id === "create") ? " nav-create" : "";
-      return divider + '<button type="button" class="nav-item' + extraCls + '" data-nav="' + esc(id) + '" aria-current="' + (state.active === id) + '">' +
-        icon + '<span>' + esc(label) + '</span>' + badge + "</button>";
+  function sectionIcon(id) {
+    if (ICONS[id]) return ICONS[id];
+    if (isCustomId(id)) return ICONS.custom;
+    return ICONS.basics;
+  }
+
+  function renderNav() {
+    var items = [["basics", "Personal Details"]].concat(state.order.map(function (id) { return [id, sectionLabel(id)]; }));
+    var html = items.map(function (n) {
+      var id = n[0];
+      var badge = state.hide[id] ? '<span class="nav-badge">Hidden</span>' : "";
+      return '<button type="button" class="nav-item" data-nav="' + id + '" aria-current="' + (state.active === id) + '">' +
+        sectionIcon(id) + '<span>' + esc(n[1]) + '</span>' + badge + '</button>';
     }).join("");
+
+    html += '<button type="button" class="nav-item nav-create" data-nav="create" aria-current="' + (state.active === "create") + '">' +
+      ICONS.plus + '<span>Create section</span></button>';
+    html += '<span class="nav-divider" aria-hidden="true"></span>';
+    html += '<button type="button" class="nav-item" data-nav="check" aria-current="' + (state.active === "check") + '">' +
+      ICONS.check + '<span>Resume Check</span><span class="nav-badge" id="navScore">0%</span></button>';
+
+    nav.innerHTML = html;
     renderScore();
   }
 
@@ -1844,7 +1906,7 @@ input[aria-invalid="true"] {
     setView("edit");
   });
 
-  /* ---------- Editor: Active Section Panel ---------- */
+  /* ---------- Editor: Active Section Form ---------- */
   function tbBtn(cmd, label, inner) {
     return '<button type="button" data-act="cmd" data-cmd="' + cmd + '" title="' + label + '" aria-label="' + label + '">' + inner + "</button>";
   }
@@ -1867,22 +1929,46 @@ input[aria-invalid="true"] {
   }
 
   function fieldHTML(f, attrs, val, id, dis) {
-    if (f.t === "check") return '<div class="field full"><label class="checkbox-label" for="' + id + '"><input type="checkbox" id="' + id + '" ' + attrs + (val ? " checked" : "") + "> " + esc(f.l) + "</label></div>";
-    if (f.t === "rich") return '<div class="field full"><span class="field-label" id="' + id + '_l">' + esc(f.l) + "</span>" + rteHTML(id, attrs, val, f.ph) + "</div>";
+    if (f.t === "check") {
+      return '<div class="field full"><label class="checkbox-label" for="' + id + '"><input type="checkbox" id="' + id + '" ' + attrs + (val ? " checked" : "") + "> " + esc(f.l) + "</label></div>";
+    }
+    if (f.t === "rich") {
+      return '<div class="field full"><span class="field-label" id="' + id + '_l">' + esc(f.l) + "</span>" + rteHTML(id, attrs, val, f.ph) + "</div>";
+    }
     return '<div class="field' + (f.half ? "" : " full") + '"><label for="' + id + '">' + esc(f.l) + '</label><input type="text" id="' + id + '" ' + attrs + ' value="' + esc(val) + '" placeholder="' + esc(f.ph || "") + '"' + (dis ? " disabled" : "") + "></div>";
+  }
+
+  function chipsPreviewHTML(raw, containerId) {
+    var arr = String(raw || "").split(/,|\n/).map(function (x) { return x.trim(); }).filter(Boolean);
+    return '<div class="skill-preview-wrap" id="' + containerId + '"' + (arr.length ? "" : " hidden") + '>' +
+      '<span class="skill-preview-label">Parsed Tags (' + arr.length + ')</span>' +
+      '<div class="skill-preview-chips">' + arr.map(function (s) { return '<span class="skill-tag">' + esc(s) + '</span>'; }).join("") + '</div></div>';
+  }
+
+  function updateChipsPreviewDOM(containerId, raw) {
+    var wrap = $(containerId);
+    if (!wrap) return;
+    var arr = String(raw || "").split(/,|\n/).map(function (x) { return x.trim(); }).filter(Boolean);
+    wrap.hidden = arr.length === 0;
+    var lbl = wrap.querySelector(".skill-preview-label");
+    var box = wrap.querySelector(".skill-preview-chips");
+    if (lbl) lbl.textContent = "Parsed Tags (" + arr.length + ")";
+    if (box) box.innerHTML = arr.map(function (s) { return '<span class="skill-tag">' + esc(s) + '</span>'; }).join("");
+  }
+
+  function styleSelectorHTML(currentStyle, targetAttr) {
+    return '<div class="field full"><span class="field-label">Display Style</span>' +
+      '<div class="format-grid" role="group" aria-label="Skills display style">' +
+      SKILL_STYLES.map(function (st) {
+        return '<button type="button" class="format-opt" ' + targetAttr + ' data-sstyle="' + st.k + '" aria-pressed="' + (currentStyle === st.k) + '">' +
+          '<strong>' + st.t + '</strong><span>' + st.d + '</span></button>';
+      }).join("") + '</div></div>';
   }
 
   var armed = { key: null, timer: null };
   function armBtn(act, id, label) {
     var on = armed.key === act + ":" + id;
-    return '<button type="button" class="btn sm' + (on ? " warn" : "") + '" data-act="' + act + '" data-s="' + esc(id) + '">' + (on ? "Confirm?" : label) + "</button>";
-  }
-
-  function chipsPreviewHTML(raw, containerId) {
-    var arr = String(raw || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
-    return '<div class="skill-preview-wrap" id="' + containerId + '"' + (arr.length ? "" : " hidden") + '>' +
-      '<span class="skill-preview-label">Parsed tags (' + arr.length + ')</span>' +
-      '<div class="skill-preview-chips">' + arr.map(function (s) { return '<span class="skill-tag">' + esc(s) + '</span>'; }).join("") + '</div></div>';
+    return '<button type="button" class="btn sm' + (on ? " warn" : "") + '" data-act="' + act + '" data-s="' + id + '">' + (on ? "Click again to confirm" : label) + "</button>";
   }
 
   function createCustomSection(label, type) {
@@ -1893,6 +1979,7 @@ input[aria-invalid="true"] {
     state.customSections[cid] = {
       label: cleanLabel,
       type: safeType,
+      chipStyle: "boxes",
       items: [blankCustomEntry()],
       chips: "",
       rich: ""
@@ -1907,9 +1994,10 @@ input[aria-invalid="true"] {
     var id = state.active, h = "";
     if (id === "check") {
       h = '<div class="editor-card"><div class="card-header"><div class="card-title-group">' + ICONS.check + '<h2>Resume Quality Check</h2></div></div><div id="score"></div></div>' +
-        '<div class="editor-card"><div class="card-header"><div class="card-title-group"><h2>Workspace Actions</h2></div></div>' +
-        '<p class="helper-note">Your edits auto-save directly to your browser\'s local storage. Load the sample dataset to explore templates or reset to a clean slate.</p>' +
+        '<div class="editor-card"><div class="card-header"><div class="card-title-group"><h2>Workspace & Backup</h2></div></div>' +
+        '<p class="helper-note">Your edits auto-save directly to your browser\'s local storage. You can also export a JSON backup file to reload later via <strong>Import Resume</strong>.</p>' +
         '<div style="display:flex; gap:8px; flex-wrap:wrap">' +
+        '<button type="button" class="btn sm" data-act="export-json">Export JSON backup</button>' +
         armBtn("sample", "all", "Load sample resume") + armBtn("blank", "all", "Clear all & start blank") + "</div></div>";
       editor.innerHTML = h;
       renderScore();
@@ -1918,13 +2006,12 @@ input[aria-invalid="true"] {
 
     if (id === "create") {
       var presetsHTML = CUSTOM_PRESETS.map(function (pr) {
-        return '<button type="button" class="preset-chip" data-act="preset" data-plabel="' + esc(pr.label) + '" data-ptype="' + pr.type + '">+ ' + esc(pr.label) + '</button>';
+        return '<button type="button" class="preset-chip" data-act="cpreset" data-plabel="' + esc(pr.label) + '" data-ptype="' + pr.type + '">+ ' + esc(pr.label) + '</button>';
       }).join("");
-
       var formats = [
-        { k: "entries", t: "Structured Entries", d: "Title, organization, date, link & rich-text bullets (e.g., Certifications, Awards)." },
-        { k: "chips", t: "Tag Chips / List", d: "Comma-separated pills ideal for Languages, Tools, or Core Competencies." },
-        { k: "rich", t: "Freeform Rich Text", d: "Flexible paragraph or bulleted list for Publications, Interests, or Summary blocks." }
+        { k: "entries", t: "Structured Entries", d: "Items with title, issuer/org, date, link & bullet details." },
+        { k: "chips", t: "Tag Chips / List", d: "Comma-separated tags, inline lists, or categorized groups." },
+        { k: "rich", t: "Freeform Rich Text", d: "Paragraphs, formatted text, links, or bullet points." }
       ];
       var formatsHTML = formats.map(function (fm) {
         return '<button type="button" class="format-opt" data-act="ctype" data-ctype="' + fm.k + '" aria-pressed="' + (createDraft.type === fm.k) + '">' +
@@ -1933,35 +2020,26 @@ input[aria-invalid="true"] {
 
       h = '<div class="editor-card">' +
         '<div class="card-header"><div class="card-title-group">' + ICONS.plus + '<h2>Create Custom Section</h2></div></div>' +
-        '<p class="helper-note">Add any tailored section to your resume. You can reorder, hide, rename, or delete custom sections at any time.</p>' +
-        '<div class="field full">' +
-          '<label for="new_sec_title">Section Heading</label>' +
-          '<input type="text" id="new_sec_title" data-act="clabel" value="' + esc(createDraft.label) + '" placeholder="e.g., Certifications, Awards, Languages, Volunteering">' +
-          '<div class="preset-row" aria-label="Quick section presets">' + presetsHTML + '</div>' +
-        '</div>' +
-        '<div class="field full">' +
-          '<span class="field-label">Section Layout Format</span>' +
-          '<div class="format-grid" role="group" aria-label="Section layout format">' + formatsHTML + '</div>' +
-        '</div>' +
-        '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">' +
-          '<button type="button" class="btn primary" data-act="create-submit">' + ICONS.plus + ' Create & Add to Resume</button>' +
-          '<button type="button" class="btn" data-act="create-cancel">Cancel</button>' +
-        '</div>' +
-      '</div>';
+        '<p class="helper-note">Add a tailored section to your resume—such as Certifications, Awards, Publications, Languages, or Volunteering.</p>' +
+        '<div class="field full"><label for="new_sec_name">Section Title</label>' +
+        '<input type="text" id="new_sec_name" data-draft="label" value="' + esc(createDraft.label) + '" placeholder="e.g., Certifications, Awards, Volunteering">' +
+        '<div class="preset-row" aria-label="Quick section presets">' + presetsHTML + '</div></div>' +
+        '<div class="field full"><span class="field-label">Section Format</span><div class="format-grid" role="group" aria-label="Section Format">' + formatsHTML + '</div></div>' +
+        '<div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px">' +
+        '<button type="button" class="btn primary" data-act="create-submit">' + ICONS.plus + '<span>Add Section to Resume</span></button>' +
+        '</div></div>';
       editor.innerHTML = h;
       return;
     }
 
-    var isCustom = isCustomId(id);
+    var isCustom = isCustomId(id) && !!state.customSections[id];
     var label = sectionLabel(id);
-    var icon = ICONS[id] || ICONS.custom;
-
-    h = '<div class="editor-card"><div class="card-header"><div class="card-title-group">' + icon + '<h2>' + esc(label) + '</h2></div><div class="card-controls">';
-    if (isSectionId(id)) {
+    h = '<div class="editor-card"><div class="card-header"><div class="card-title-group">' + sectionIcon(id) + '<h2>' + esc(label) + '</h2></div><div class="card-controls">';
+    if (BUILTIN_ORDER[id] || isCustom) {
       var idx = state.order.indexOf(id), hid = !!state.hide[id];
-      h += '<button type="button" class="btn sm" data-act="hide" data-s="' + esc(id) + '" aria-pressed="' + hid + '" title="Toggle visibility on resume">' + (hid ? "Hidden" : "Visible") + "</button>" +
-        '<button type="button" class="icon-btn" data-act="up" data-s="' + esc(id) + '" title="Move section up" aria-label="Move ' + esc(label) + ' up"' + (idx === 0 ? " disabled" : "") + ">" + ICONS.up + "</button>" +
-        '<button type="button" class="icon-btn" data-act="down" data-s="' + esc(id) + '" title="Move section down" aria-label="Move ' + esc(label) + ' down"' + (idx === state.order.length - 1 ? " disabled" : "") + ">" + ICONS.down + "</button>";
+      h += '<button type="button" class="btn sm" data-act="hide" data-s="' + id + '" aria-pressed="' + hid + '" title="Toggle section visibility on resume">' + (hid ? "Hidden" : "Visible") + "</button>" +
+        '<button type="button" class="icon-btn" data-act="up" data-s="' + id + '" title="Move section up" aria-label="Move ' + esc(label) + ' up"' + (idx === 0 ? " disabled" : "") + ">" + ICONS.up + "</button>" +
+        '<button type="button" class="icon-btn" data-act="down" data-s="' + id + '" title="Move section down" aria-label="Move ' + esc(label) + ' down"' + (idx === state.order.length - 1 ? " disabled" : "") + ">" + ICONS.down + "</button>";
     }
     if (isCustom) {
       h += armBtn("delsec", id, "Delete section");
@@ -1978,145 +2056,136 @@ input[aria-invalid="true"] {
       });
       h += "</div>";
     } else if (id === "skills") {
-      h += '<p class="helper-note">Enter your skills separated by commas. They will render as clean, scannable tags on your resume.</p>' +
-        '<div class="field"><textarea id="t_skills" data-s="skills" rows="4" placeholder="SQL, Python, Power BI, Data Modeling, Stakeholder Management" aria-label="Skills">' + esc(state.skills) + "</textarea>" +
-        chipsPreviewHTML(state.skills, "skillPreviewWrap") + '</div>';
+      var skStyle = state.skillsStyle || "boxes";
+      var skPh = skStyle === "grouped"
+        ? "Programming: Python, Java, SQL\nFrameworks: Django, REST APIs, Spring Boot\nTools: Git, MySQL, Jupyter Notebook"
+        : "SQL, Python, Power BI, Data Modeling, Stakeholder Management";
+      var skNote = skStyle === "grouped"
+        ? "Put each category on a new line (e.g., <strong>Programming: Python, Java</strong>)."
+        : "Separate skills with commas. Switch between pill boxes, clean inline text, or categorized lines.";
+      h += styleSelectorHTML(skStyle, 'data-act="skstyle" data-s="skills"') +
+        '<p class="helper-note">' + skNote + '</p>' +
+        '<div class="field"><textarea id="t_skills" data-s="skills" rows="4" placeholder="' + esc(skPh) + '" aria-label="Skills">' + esc(state.skills) + "</textarea>" +
+        (skStyle === "grouped" ? "" : chipsPreviewHTML(state.skills, "skillPreviewWrap")) + '</div>';
     } else if (isCustom) {
       var cs = state.customSections[id];
       h += '<div class="field full"><label for="cs_title_' + esc(id) + '">Section Heading</label>' +
         '<input type="text" id="cs_title_' + esc(id) + '" data-s="' + esc(id) + '" data-csprop="label" value="' + esc(cs.label) + '" placeholder="Section title"></div>';
 
       if (cs.type === "chips") {
-        h += '<p class="helper-note">Separate items with commas. They will appear as clean tags on your resume.</p>' +
-          '<div class="field"><textarea id="cs_chips_' + esc(id) + '" data-s="' + esc(id) + '" data-csprop="chips" rows="4" placeholder="English (Native), Spanish (Fluent), French (Conversational)">' + esc(cs.chips) + '</textarea>' +
-          chipsPreviewHTML(cs.chips, "csPreviewWrap_" + esc(id)) + '</div>';
+        var cStyle = cs.chipStyle || "boxes";
+        var cPh = cStyle === "grouped"
+          ? "Spoken: English (Native), Hindi (Fluent)\nTechnical: French (Basic)"
+          : "English (Native), Spanish (Fluent), French (Conversational)";
+        var cNote = cStyle === "grouped"
+          ? "Enter one group per line (e.g., <strong>Core: Problem Solving, Leadership</strong>)."
+          : "Separate items with commas. Choose whether they appear as boxes, inline text, or categorized lines.";
+        h += styleSelectorHTML(cStyle, 'data-act="skstyle" data-s="' + esc(id) + '"') +
+          '<p class="helper-note">' + cNote + '</p>' +
+          '<div class="field"><textarea id="cs_chips_' + esc(id) + '" data-s="' + esc(id) + '" data-csprop="chips" rows="4" placeholder="' + esc(cPh) + '">' + esc(cs.chips) + '</textarea>' +
+          (cStyle === "grouped" ? "" : chipsPreviewHTML(cs.chips, "csPreviewWrap_" + esc(id))) + '</div>';
       } else if (cs.type === "rich") {
-        h += '<div class="field full"><span class="field-label" id="cs_rich_' + esc(id) + '_l">Section Content</span>' +
-          rteHTML("cs_rich_" + esc(id), 'data-s="' + esc(id) + '" data-csprop="rich"', cs.rich, "Write paragraphs or bullet points for this section...") + '</div>';
+        h += '<p class="helper-note">Write paragraphs, bullet points, or links for this section.</p>' +
+          '<div class="field full"><span class="field-label" id="cs_rich_' + esc(id) + '_l">Content</span>' +
+          rteHTML("cs_rich_" + esc(id), 'data-s="' + esc(id) + '" data-csprop="rich"', cs.rich, "Add details, achievements, or bullet points...") + '</div>';
       } else {
         if (!cs.items.length) h += '<p class="helper-note">No entries added yet. Click below to add your first item.</p>';
         cs.items.forEach(function (it, i) {
-          var liveSub = it.title ? " · " + it.title : (it.sub ? " · " + it.sub : "");
-          h += '<div class="entry-card"><div class="entry-header"><div class="entry-title"><span class="entry-num">' + (i + 1) + '</span><span>Entry</span><span class="entry-subtitle">' + esc(liveSub) + '</span></div>' +
-            '<button type="button" class="icon-btn danger" data-act="del" data-s="' + esc(id) + '" data-i="' + i + '" title="Remove entry" aria-label="Remove entry ' + (i + 1) + '">' + ICONS.trash + '</button></div><div class="form-grid">';
+          var liveSub = [it.title, it.sub].filter(Boolean).join(" · ");
+          h += '<div class="entry-card"><div class="entry-header"><div class="entry-title"><span class="entry-num">' + (i + 1) + '</span><span>Item ' + (i + 1) + '</span>' +
+            (liveSub ? '<span class="entry-subtitle">— ' + esc(liveSub) + '</span>' : '') +
+            '</div><button type="button" class="icon-btn danger" data-act="del" data-s="' + esc(id) + '" data-i="' + i + '" title="Remove item" aria-label="Remove item ' + (i + 1) + '">' + ICONS.trash + '</button></div><div class="form-grid">';
           CUSTOM_ENTRY_FIELDS.forEach(function (f) {
-            h += fieldHTML(f, 'data-s="' + esc(id) + '" data-i="' + i + '" data-k="' + f.k + '"', it[f.k], esc(id) + "_" + i + "_" + f.k, false);
+            h += fieldHTML(f, 'data-s="' + esc(id) + '" data-i="' + i + '" data-k="' + f.k + '"', it[f.k], id + "_" + i + "_" + f.k, false);
           });
           h += "</div></div>";
         });
-        h += '<button type="button" class="btn add-entry-btn" data-act="add" data-s="' + esc(id) + '">' + ICONS.plus + " Add entry</button>";
+        h += '<button type="button" class="btn add-entry-btn" data-act="add" data-s="' + esc(id) + '">' + ICONS.plus + '<span>Add item</span></button>';
       }
     } else {
       var sc = SEC[id];
       if (!state[id].length) h += '<p class="helper-note">No ' + sc.label.toLowerCase() + " added yet. Click below to add your first entry.</p>";
       state[id].forEach(function (it, i) {
-        var liveTitle = it[sc.titleKey] || it[sc.subKey] || "";
-        var subBadge = liveTitle ? ' · ' + liveTitle : '';
-        h += '<div class="entry-card"><div class="entry-header"><div class="entry-title"><span class="entry-num">' + (i + 1) + '</span><span>' + sc.item + '</span><span class="entry-subtitle">' + esc(subBadge) + '</span></div>' +
-          '<button type="button" class="icon-btn danger" data-act="del" data-s="' + id + '" data-i="' + i + '" title="Remove ' + sc.item.toLowerCase() + '" aria-label="Remove ' + sc.item + " " + (i + 1) + '">' + ICONS.trash + '</button></div><div class="form-grid">';
+        var liveSub = [it[sc.titleKey], it[sc.subKey]].filter(Boolean).join(" · ");
+        h += '<div class="entry-card"><div class="entry-header"><div class="entry-title"><span class="entry-num">' + (i + 1) + '</span><span>' + sc.item + " " + (i + 1) + '</span>' +
+          (liveSub ? '<span class="entry-subtitle">— ' + esc(liveSub) + '</span>' : '') +
+          '</div><button type="button" class="icon-btn danger" data-act="del" data-s="' + id + '" data-i="' + i + '" title="Remove ' + sc.item.toLowerCase() + '" aria-label="Remove ' + sc.item + " " + (i + 1) + '">' + ICONS.trash + '</button></div><div class="form-grid">';
         sc.fields.forEach(function (f) {
           h += fieldHTML(f, 'data-s="' + id + '" data-i="' + i + '" data-k="' + f.k + '"', it[f.k], id + "_" + i + "_" + f.k, id === "experience" && f.k === "end" && it.current);
         });
         h += "</div></div>";
       });
-      h += '<button type="button" class="btn add-entry-btn" data-act="add" data-s="' + id + '">' + ICONS.plus + " Add " + sc.item.toLowerCase() + "</button>";
+      h += '<button type="button" class="btn add-entry-btn" data-act="add" data-s="' + id + '">' + ICONS.plus + '<span>Add ' + sc.item.toLowerCase() + "</span></button>";
     }
     editor.innerHTML = h + "</div>";
   }
 
   /* ---------- Editor: Events & Rich Text Formatting ---------- */
-  function cleanStore(body) { var v = sanitize(body.innerHTML); return isEmptyHtml(v) && !/<li/.test(v) ? "" : v; }
-  function syncEmpty(body) { body.classList.toggle("is-empty", !body.textContent.trim() && !body.querySelector("li")); }
+  function cleanStore(body) {
+    var v = sanitize(body.innerHTML);
+    return isEmptyHtml(v) && !/<li/.test(v) ? "" : v;
+  }
+  function syncEmpty(body) {
+    body.classList.toggle("is-empty", !body.textContent.trim() && !body.querySelector("li"));
+  }
 
   function updateToolbarStates() {
     var sel = window.getSelection();
     if (!sel || !sel.rangeCount) return;
     var anchor = sel.anchorNode;
-    var el = anchor && (anchor.nodeType === 3 ? anchor.parentNode : anchor);
+    var el = anchor && anchor.nodeType === 3 ? anchor.parentElement : anchor;
     var rte = el && el.closest ? el.closest(".rte") : null;
     document.querySelectorAll(".rte-bar button[data-cmd]").forEach(function (btn) {
-      if (!rte || !rte.contains(btn)) { btn.classList.remove("is-active"); return; }
+      if (!rte || !rte.contains(btn)) {
+        btn.classList.remove("is-active");
+        return;
+      }
       try {
         btn.classList.toggle("is-active", document.queryCommandState(btn.dataset.cmd));
-      } catch (e) { btn.classList.remove("is-active"); }
+      } catch (e) {
+        btn.classList.remove("is-active");
+      }
     });
   }
   document.addEventListener("selectionchange", updateToolbarStates);
 
-  function syncLiveEntrySubtitle(target) {
-    var card = target.closest && target.closest(".entry-card");
-    if (!card) return;
-    var s = target.dataset.s, i = +target.dataset.i;
-    var subEl = card.querySelector(".entry-subtitle");
-    if (!subEl) return;
-    if (isCustomId(s) && state.customSections[s]) {
-      var cit = state.customSections[s].items[i];
-      if (!cit) return;
-      var clive = cit.title || cit.sub || "";
-      subEl.textContent = clive ? " · " + clive : "";
-      return;
-    }
-    if (!SEC[s]) return;
-    var sc = SEC[s], it = state[s][i];
-    if (!it) return;
-    var live = it[sc.titleKey] || it[sc.subKey] || "";
-    subEl.textContent = live ? " · " + live : "";
-  }
-
-  function updateChipsPreviewDOM(wrapId, rawText) {
-    var wrap = $(wrapId);
-    if (!wrap) return;
-    var arr = String(rawText || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
-    wrap.hidden = arr.length === 0;
-    var lbl = wrap.querySelector(".skill-preview-label");
-    var box = wrap.querySelector(".skill-preview-chips");
-    if (lbl) lbl.textContent = "Parsed tags (" + arr.length + ")";
-    if (box) box.innerHTML = arr.map(function (sk) { return '<span class="skill-tag">' + esc(sk) + '</span>'; }).join("");
-  }
-
   function onEdit(e) {
     var t = e.target;
-    if (t.dataset && t.dataset.act === "clabel") {
+    if (t.dataset && t.dataset.draft === "label") {
       createDraft.label = t.value;
-      t.removeAttribute("aria-invalid");
       return;
     }
-
     var s = t.dataset && t.dataset.s;
     if (!s) return;
     var isRte = t.classList.contains("rte-body");
     var v = isRte ? cleanStore(t) : (t.type === "checkbox" ? t.checked : t.value);
-    if (isRte) { syncEmpty(t); updateToolbarStates(); }
+    if (isRte) syncEmpty(t);
 
-    if (s === "basics") state.basics[t.dataset.k] = v;
-    else if (isCustomId(s) && state.customSections[s]) {
+    if (s === "basics") {
+      state.basics[t.dataset.k] = v;
+    } else if (isCustomId(s) && state.customSections[s]) {
       var cs = state.customSections[s];
       if (t.dataset.csprop) {
         cs[t.dataset.csprop] = v;
         if (t.dataset.csprop === "label") {
-          var h2 = editor.querySelector(".card-title-group h2");
-          if (h2) h2.textContent = v.trim() || "Untitled Section";
-          var navLabel = nav.querySelector('[data-nav="' + s + '"] span');
-          if (navLabel) navLabel.textContent = v.trim() || "Untitled Section";
-        } else if (t.dataset.csprop === "chips") {
+          var navBtnSpan = nav.querySelector('[data-nav="' + s + '"] span');
+          if (navBtnSpan) navBtnSpan.textContent = v.trim() || "Custom Section";
+        } else if (t.dataset.csprop === "chips" && cs.chipStyle !== "grouped") {
           updateChipsPreviewDOM("csPreviewWrap_" + s, v);
         }
       } else if (t.dataset.i !== undefined) {
         cs.items[+t.dataset.i][t.dataset.k] = v;
-        syncLiveEntrySubtitle(t);
       }
     } else if (t.dataset.i !== undefined) {
       state[s][+t.dataset.i][t.dataset.k] = v;
-      syncLiveEntrySubtitle(t);
     } else {
       state[s] = v;
     }
 
-    if (s === "skills") updateChipsPreviewDOM("skillPreviewWrap", v);
+    if (s === "skills" && state.skillsStyle !== "grouped") updateChipsPreviewDOM("skillPreviewWrap", v);
     if (t.type === "checkbox") { var end = $(s + "_" + t.dataset.i + "_end"); if (end) end.disabled = !!v; }
     update();
   }
-
   editor.addEventListener("input", onEdit);
   editor.addEventListener("change", onEdit);
   editor.addEventListener("mousedown", function (e) { if (e.target.closest(".rte-bar button")) e.preventDefault(); });
@@ -2130,7 +2199,6 @@ input[aria-invalid="true"] {
   var savedRange = null;
   function rteOf(el) { return el.closest(".rte"); }
   function fireInput(body) { body.dispatchEvent(new Event("input", { bubbles: true })); }
-
   function openLink(rte) {
     var body = rte.querySelector(".rte-body"), bar = rte.querySelector(".rte-link"), inp = bar.querySelector("input");
     var sel = window.getSelection(), r = sel.rangeCount ? sel.getRangeAt(0) : null;
@@ -2154,14 +2222,11 @@ input[aria-invalid="true"] {
     else document.execCommand("createLink", false, href);
     closeLink(rte); fireInput(body);
   }
-
   editor.addEventListener("keydown", function (e) {
-    if (e.target && e.target.id === "new_sec_title" && e.key === "Enter") {
+    if (e.target && e.target.id === "new_sec_name" && e.key === "Enter") {
       e.preventDefault();
-      var cid = createCustomSection(e.target.value, createDraft.type);
-      if (!cid) { e.target.setAttribute("aria-invalid", "true"); e.target.focus(); return; }
-      renderNav(); renderPanel(); update();
-      toast("Custom section added");
+      var sub = editor.querySelector('[data-act="create-submit"]');
+      if (sub) sub.click();
       return;
     }
     var inp = e.target.closest && e.target.closest(".rte-link input");
@@ -2180,7 +2245,9 @@ input[aria-invalid="true"] {
   function replaceState(src) {
     var a = state.active;
     state = normalize(clone(src));
-    state.active = (a === "basics" || a === "check" || BUILTIN_ORDER[a] || state.customSections[a]) ? a : "basics";
+    if (a && (a === "basics" || a === "check" || a === "create" || BUILTIN_ORDER[a] || state.customSections[a])) {
+      state.active = a;
+    }
     renderNav(); renderPanel(); renderTools(); update();
   }
 
@@ -2188,13 +2255,22 @@ input[aria-invalid="true"] {
     var b = e.target.closest("[data-act]");
     if (!b) return;
     var act = b.dataset.act, s = b.dataset.s, i = +b.dataset.i;
+    if (act === "cmd") {
+      var body = rteOf(b).querySelector(".rte-body");
+      if (document.activeElement !== body) body.focus();
+      document.execCommand(b.dataset.cmd); fireInput(body); updateToolbarStates(); return;
+    }
+    if (act === "link") { openLink(rteOf(b)); return; }
+    if (act === "link-apply") { applyLink(rteOf(b), false); return; }
+    if (act === "link-remove") { applyLink(rteOf(b), true); return; }
+    if (act === "link-close") { closeLink(rteOf(b)); return; }
 
-    if (act === "preset") {
+    if (act === "cpreset") {
       createDraft.label = b.dataset.plabel || "";
       createDraft.type = b.dataset.ptype || "entries";
       renderPanel();
-      var inp = $("new_sec_title");
-      if (inp) inp.focus();
+      var nameInp = $("new_sec_name");
+      if (nameInp) nameInp.focus();
       return;
     }
     if (act === "ctype") {
@@ -2202,53 +2278,51 @@ input[aria-invalid="true"] {
       renderPanel();
       return;
     }
+    if (act === "skstyle") {
+      var nextStyle = b.dataset.sstyle || "boxes";
+      if (s === "skills") state.skillsStyle = nextStyle;
+      else if (isCustomId(s) && state.customSections[s]) state.customSections[s].chipStyle = nextStyle;
+      renderPanel(); update();
+      return;
+    }
+    if (act === "export-json") {
+      var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = ((state.basics.name || "resume").trim().replace(/\s+/g, "_") + "_plainleaf.json");
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+      toast("Downloaded JSON resume backup");
+      return;
+    }
     if (act === "create-submit") {
-      var titleInp = $("new_sec_title");
-      var rawTitle = titleInp ? titleInp.value : createDraft.label;
-      var newId = createCustomSection(rawTitle, createDraft.type);
-      if (!newId) {
-        if (titleInp) { titleInp.setAttribute("aria-invalid", "true"); titleInp.focus(); }
-        toast("Enter a section heading first");
+      var inpEl = $("new_sec_name");
+      var secTitle = (inpEl ? inpEl.value : createDraft.label).trim();
+      if (!secTitle) {
+        if (inpEl) { inpEl.setAttribute("aria-invalid", "true"); inpEl.focus(); }
+        toast("Enter a section title first");
         return;
       }
+      createCustomSection(secTitle, createDraft.type);
       renderNav(); renderPanel(); update();
-      toast("Custom section added");
-      var firstField = editor.querySelector(".entry-card input, textarea, .rte-body");
-      if (firstField) firstField.focus();
+      toast('Added "' + secTitle + '" section');
       return;
     }
-    if (act === "create-cancel") {
-      state.active = "basics";
-      renderNav(); renderPanel();
-      return;
-    }
-
-    if (act === "cmd") {
-      var body = rteOf(b).querySelector(".rte-body");
-      if (document.activeElement !== body) body.focus();
-      document.execCommand(b.dataset.cmd); fireInput(body); return;
-    }
-    if (act === "link") { openLink(rteOf(b)); return; }
-    if (act === "link-apply") { applyLink(rteOf(b), false); return; }
-    if (act === "link-remove") { applyLink(rteOf(b), true); return; }
-    if (act === "link-close") { closeLink(rteOf(b)); return; }
 
     if (act === "reset" || act === "sample" || act === "blank" || act === "delsec") {
       var key = act + ":" + s;
       if (armed.key === key) {
         clearTimeout(armed.timer); armed.key = null;
-        if (act === "reset") {
-          doReset(s); renderPanel(); update(); toast("Section cleared");
-        } else if (act === "delsec") {
+        if (act === "reset") { doReset(s); renderPanel(); update(); toast("Section cleared"); }
+        else if (act === "delsec") {
+          var deletedName = sectionLabel(s);
           delete state.customSections[s];
           delete state.hide[s];
           state.order = state.order.filter(function (x) { return x !== s; });
           state.active = "basics";
-          renderNav(); renderPanel(); update(); toast("Custom section deleted");
-        } else {
-          replaceState(act === "sample" ? SAMPLE : makeBlank());
-          toast(act === "sample" ? "Sample resume loaded" : "Blank resume ready");
-        }
+          renderNav(); renderPanel(); update();
+          toast('Deleted "' + deletedName + '"');
+        } else { replaceState(act === "sample" ? SAMPLE : makeBlank()); toast(act === "sample" ? "Sample resume loaded" : "Blank resume ready"); }
       } else {
         armed.key = key; clearTimeout(armed.timer);
         armed.timer = setTimeout(function () { armed.key = null; renderPanel(); }, 3500);
@@ -2266,31 +2340,57 @@ input[aria-invalid="true"] {
       if (keep) keep.focus();
     } else if (act === "hide") {
       state.hide[s] = !state.hide[s]; renderNav(); renderPanel(); update();
-      toast(state.hide[s] ? "Section hidden on resume" : "Section visible on resume");
     } else if (act === "add") {
-      if (isCustomId(s) && state.customSections[s]) state.customSections[s].items.push(blankCustomEntry());
-      else state[s].push(blankItem(s));
+      if (isCustomId(s) && state.customSections[s]) {
+        state.customSections[s].items.push(blankCustomEntry());
+      } else {
+        state[s].push(blankItem(s));
+      }
       renderPanel(); update();
       var ents = editor.querySelectorAll(".entry-card"), last = ents[ents.length - 1];
       if (last) { var f = last.querySelector("input"); if (f) f.focus(); }
     } else if (act === "del") {
-      if (isCustomId(s) && state.customSections[s]) state.customSections[s].items.splice(i, 1);
-      else state[s].splice(i, 1);
+      if (isCustomId(s) && state.customSections[s]) {
+        state.customSections[s].items.splice(i, 1);
+      } else {
+        state[s].splice(i, 1);
+      }
       renderPanel(); update();
     }
   });
 
   /* ---------- Live A4 Preview Rendering ---------- */
   function rich(h) { return isEmptyHtml(h) && !/<li/.test(h) ? "" : '<div class="rich">' + sanitize(h) + "</div>"; }
+
+  function renderTagBlock(rawText, styleMode) {
+    var mode = styleMode || "boxes";
+    if (mode === "grouped") {
+      var rowLines = String(rawText || "").split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean);
+      if (!rowLines.length) return "";
+      return '<ul class="cat-list">' + rowLines.map(function (ln) {
+        var idx = ln.indexOf(":");
+        if (idx > 0 && idx < 45) {
+          return "<li><b>" + esc(ln.slice(0, idx + 1)) + "</b> " + esc(ln.slice(idx + 1).trim()) + "</li>";
+        }
+        return "<li>" + esc(ln) + "</li>";
+      }).join("") + "</ul>";
+    }
+    var arr = String(rawText || "").split(/,|\n/).map(function (x) { return x.trim(); }).filter(Boolean);
+    if (!arr.length) return "";
+    if (mode === "inline") {
+      return '<div class="inline-list">' + arr.map(esc).join('<span class="inline-sep">·</span>') + "</div>";
+    }
+    return '<div class="chips">' + arr.map(function (s) { return '<span class="chip">' + esc(s) + "</span>"; }).join("") + "</div>";
+  }
+
   function sectionHTML(id) {
     var h = "";
     if (isCustomId(id) && state.customSections[id]) {
       var cs = state.customSections[id];
       var heading = esc(cs.label || "Custom Section");
       if (cs.type === "chips") {
-        var cArr = String(cs.chips || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
-        if (!cArr.length) return "";
-        return "<section><h3>" + heading + '</h3><div class="chips">' + cArr.map(function (c) { return '<span class="chip">' + esc(c) + "</span>"; }).join("") + "</div></section>";
+        var tagBody = renderTagBlock(cs.chips, cs.chipStyle);
+        return tagBody ? "<section><h3>" + heading + "</h3>" + tagBody + "</section>" : "";
       }
       if (cs.type === "rich") {
         var rHtml = rich(cs.rich);
@@ -2328,9 +2428,9 @@ input[aria-invalid="true"] {
       return "<section><h3>Education</h3>" + h + "</section>";
     }
     if (id === "skills") {
-      var sk = skillsArr();
-      if (!sk.length) return "";
-      return '<section><h3>Skills</h3><div class="chips">' + sk.map(function (s) { return '<span class="chip">' + esc(s) + "</span>"; }).join("") + "</div></section>";
+      var skBody = renderTagBlock(state.skills, state.skillsStyle);
+      if (!skBody) return "";
+      return "<section><h3>Skills</h3>" + skBody + "</section>";
     }
     if (id === "projects") {
       var ps = state.projects.filter(function (x) { return x.name || !isEmptyHtml(x.desc); });
@@ -2343,7 +2443,7 @@ input[aria-invalid="true"] {
     return "";
   }
 
-  function skillsArr() { return String(state.skills || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean); }
+  function skillsArr() { return String(state.skills || "").split(/,|\n/).map(function (x) { return x.trim(); }).filter(Boolean); }
   function hrefFor(v) {
     v = String(v || "").trim();
     if (!v || /\s/.test(v)) return "";
@@ -2377,15 +2477,15 @@ input[aria-invalid="true"] {
   function summaryHTML() { return rich(state.summary) ? "<section><h3>Summary</h3>" + rich(state.summary) + "</section>" : ""; }
 
   function renderPreview() {
-    paper.className = "paper t-" + state.template + " f-" + state.font;
+    paper.className = "paper t-" + state.template + " f-" + state.font + " d-" + (state.density || "standard");
     paper.style.setProperty("--ra", state.accent);
     var shown = state.order.filter(function (i) { return !state.hide[i]; });
     var html;
     if (state.template === "sidebar") {
-      var sk = skillsArr(), showSk = !state.hide.skills && sk.length;
+      var skBody = !state.hide.skills ? renderTagBlock(state.skills, state.skillsStyle) : "";
       var chipCustomIds = shown.filter(function (i) { return isCustomId(i) && state.customSections[i] && state.customSections[i].type === "chips"; });
       var side = '<aside class="side"><h3>Contact</h3><div class="contact">' + contactItems() + "</div>" +
-        (showSk ? '<h3>Skills</h3><div class="chips">' + sk.map(function (s) { return '<span class="chip">' + esc(s) + "</span>"; }).join("") + "</div>" : "") +
+        (skBody ? "<h3>Skills</h3>" + skBody : "") +
         chipCustomIds.map(sectionHTML).join("") + "</aside>";
       var main = '<div class="main">' + headHTML() + summaryHTML() + shown.filter(function (i) { return i !== "skills" && chipCustomIds.indexOf(i) < 0; }).map(sectionHTML).join("") + "</div>";
       html = '<div class="wrap2">' + side + main + "</div>";
@@ -2397,22 +2497,19 @@ input[aria-invalid="true"] {
   }
 
   function fit() {
-    var style = window.getComputedStyle(stage);
-    var padX = (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0);
-    var padY = (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0);
-    var w = Math.max(240, (stage.clientWidth || 794) - padX);
-    var sc = Math.min(1, w / 794);
+    var availW = Math.max(260, (stage.clientWidth || 794) - 32);
+    var sc = Math.min(1, availW / 794);
     paper.style.transform = "scale(" + sc + ")";
-    paper.style.marginLeft = Math.max(0, (w - 794 * sc) / 2) + "px";
+    paper.style.marginLeft = Math.max(0, (availW - 794 * sc) / 2) + "px";
     var h = paper.offsetHeight;
-    stage.style.height = Math.ceil(h * sc + padY) + "px";
+    stage.style.height = (Math.ceil(h * sc) + 48) + "px";
     paper.querySelectorAll(".pbreak").forEach(function (n) { n.remove(); });
     var pages = Math.max(1, Math.ceil((h - 2) / PAGE_H));
     for (var pg = 1; pg < pages; pg++) {
       var d = document.createElement("div");
       d.className = "pbreak";
       d.style.top = pg * PAGE_H + "px";
-      d.textContent = "Page " + (pg + 1) + " break";
+      d.textContent = "Page " + (pg + 1) + " starts here";
       paper.appendChild(d);
     }
     paper._pages = pages;
@@ -2427,15 +2524,15 @@ input[aria-invalid="true"] {
     var allBullets = []; xs.forEach(function (x) { allBullets = allBullets.concat(textLines(x.desc)); });
     var sumLen = htmlToText(state.summary).length;
     var checks = [
-      [b.name && b.title, "Name and headline are filled in", "Add both so recruiters immediately recognize your role."],
-      [b.email && b.phone, "Email and phone number are included", "Provide both primary contact channels."],
-      [sumLen >= 150 && sumLen <= 450, "Professional summary is 150–450 characters", "Currently " + sumLen + " characters. Aim for two or three focused sentences."],
-      [xs.length > 0 && xs.every(function (x) { return textLines(x.desc).length >= 2; }), "Every role has at least two bullet points", "Add a second bullet highlighting impact for each position."],
-      [allBullets.some(function (l) { return /\d/.test(l); }), "Experience bullets include measurable numbers", "Quantify results with a metric, percentage, or time saved."],
-      [state.education.some(function (x) { return x.degree || x.school; }), "Education history is listed", "Include your degree, institution, or relevant coursework."],
-      [state.education.some(function (x) { return x.score && x.score.trim(); }), "Education includes a GPA or grade", "Add your CGPA, GPA, or percentage in Education."],
-      [skillsArr().length >= 5, "At least 5 skills are listed", "Add core tools and domain skills matching your target role."],
-      [(paper._pages || 1) === 1, "Fits cleanly onto a single A4 page", "Trim older roles or tighten descriptions to keep your resume to 1 page."]
+      [b.name && b.title, "Name and job title are filled in", "Add both so a recruiter knows who you are at a glance."],
+      [b.email && b.phone, "Email and phone are filled in", "Provide two direct ways for recruiters to reach you."],
+      [sumLen >= 150 && sumLen <= 450, "Summary is 150 to 450 characters", "Yours is " + sumLen + " characters. Aim for two or three crisp sentences."],
+      [xs.length > 0 && xs.every(function (x) { return textLines(x.desc).length >= 2; }), "Every role has at least two achievements", "Add a second bullet point to each role."],
+      [allBullets.some(function (l) { return /\d/.test(l); }), "Achievements include measurable numbers", "Add a count, percentage, or time saved to at least one bullet."],
+      [state.education.some(function (x) { return x.degree || x.school; }), "Education is listed", "Add your degree, certification, or coursework."],
+      [state.education.some(function (x) { return x.score && x.score.trim(); }), "Education includes a GPA or percentage", "Add your CGPA or percentage in the Education section."],
+      [skillsArr().length >= 5, "At least 5 skills listed", "List the key tools and skills the target role asks for."],
+      [(paper._pages || 1) === 1, "Fits cleanly on one A4 page", "Trim older roles or tighten bullets to keep your resume to 1 page."]
     ];
     var pass = checks.filter(function (c) { return c[0]; }).length, pct = Math.round(pass / checks.length * 100);
 
@@ -2468,7 +2565,7 @@ input[aria-invalid="true"] {
       if (isCustomId(id) && state.customSections[id]) {
         var cs = state.customSections[id];
         if (cs.type === "chips") {
-          var cArr = String(cs.chips || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+          var cArr = String(cs.chips || "").split(/,|\n/).map(function (x) { return x.trim(); }).filter(Boolean);
           if (cArr.length) t.push(cArr.join(", "));
         } else if (cs.type === "rich") {
           var rTx = htmlToText(cs.rich);
@@ -2476,14 +2573,13 @@ input[aria-invalid="true"] {
         } else {
           (cs.items || []).forEach(function (x) {
             if (!(x.title || x.sub || x.date || x.link || !isEmptyHtml(x.desc))) return;
-            var head = [x.title, x.sub].filter(Boolean).join(", ");
-            var tail = [x.date, x.link].filter(Boolean).join(" | ");
-            t.push(head + (tail ? " (" + tail + ")" : ""));
+            t.push([x.title, x.sub].filter(Boolean).join(", ") + (x.date ? " (" + x.date + ")" : ""));
+            if (x.link) t.push(x.link);
             var tx = htmlToText(x.desc); if (tx) t.push(tx);
             t.push("");
           });
         }
-        if (t.length) { out.push(""); out.push((cs.label || "CUSTOM SECTION").toUpperCase()); out = out.concat(t); }
+        if (t.length) { out.push(""); out.push((cs.label || "CUSTOM").toUpperCase()); out = out.concat(t); }
         return;
       }
       if (id === "experience") state.experience.forEach(function (x) {
@@ -2524,42 +2620,35 @@ input[aria-invalid="true"] {
       try {
         if (document.execCommand("copy")) {
           box.hidden = true;
-          toast("Copied resume as plain text");
+          toast("Copied plain-text resume to clipboard");
           return;
         }
-      } catch (err) {}
-      toast("Select the text below to copy");
+      } catch (e) {}
+      toast("Select the text and copy it");
     }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { box.hidden = true; toast("Copied resume as plain text"); }, fallback);
-    } else {
-      fallback();
-    }
+    try { navigator.clipboard.writeText(text).then(function () { box.hidden = true; toast("Copied plain-text resume to clipboard"); }, fallback); }
+    catch (e) { fallback(); }
   });
 
-  /* ---------- PDF Export ---------- */
+  /* ---------- PDF Print Trigger ---------- */
   var CAN_PRINT = true;
   try { CAN_PRINT = window.top === window.self; } catch (e) { CAN_PRINT = false; }
   $("pdfBtn").addEventListener("click", function () {
-    if (!CAN_PRINT) {
-      $("pdfnote").hidden = false;
-      setView("preview");
-      $("pdfnote").scrollIntoView({ block: "nearest" });
-      return;
-    }
+    if (!CAN_PRINT) { $("pdfnote").hidden = false; setView("preview"); $("pdfnote").scrollIntoView({ block: "nearest" }); return; }
     setView("preview");
-    toast('Choose "Save as PDF" in the print dialog');
+    toast('Select "Save as PDF" in the print dialog');
     setTimeout(function () { window.print(); }, 250);
   });
 
   /* ---------- Preview Studio Toolbar ---------- */
   function renderTools() {
-    var tg = $("tplGrp"), cg = $("colGrp"), fg = $("fontGrp");
+    var tg = $("tplGrp"), cg = $("colGrp"), fg = $("fontGrp"), dg = $("denGrp");
     tg.innerHTML = '<span class="tool-label">Layout</span><div class="seg-group" id="tplSeg"></div>';
     cg.innerHTML = '<span class="tool-label">Accent</span><div class="swatches" id="colSwatches"></div>';
     fg.innerHTML = '<span class="tool-label">Type</span><div class="seg-group" id="fontSeg"></div>';
+    dg.innerHTML = '<span class="tool-label">Density</span><div class="seg-group" id="denSeg"></div>';
 
-    var tplSeg = $("tplSeg"), colSw = $("colSwatches"), fontSeg = $("fontSeg");
+    var tplSeg = $("tplSeg"), colSw = $("colSwatches"), fontSeg = $("fontSeg"), denSeg = $("denSeg");
     TEMPLATES.forEach(function (t) {
       tplSeg.insertAdjacentHTML("beforeend", '<button type="button" class="seg-btn" data-tpl="' + t[0] + '" aria-pressed="' + (state.template === t[0]) + '">' + t[1] + "</button>");
     });
@@ -2569,22 +2658,245 @@ input[aria-invalid="true"] {
     FONTS.forEach(function (f) {
       fontSeg.insertAdjacentHTML("beforeend", '<button type="button" class="seg-btn" data-font="' + f[0] + '" aria-pressed="' + (state.font === f[0]) + '">' + f[1] + "</button>");
     });
+    DENSITIES.forEach(function (d) {
+      denSeg.insertAdjacentHTML("beforeend", '<button type="button" class="seg-btn" data-den="' + d[0] + '" aria-pressed="' + ((state.density || "standard") === d[0]) + '">' + d[1] + "</button>");
+    });
   }
 
   $("previewPane").addEventListener("click", function (e) {
-    var t = e.target.closest("[data-tpl],[data-col],[data-font]");
+    var t = e.target.closest("[data-tpl],[data-col],[data-font],[data-den]");
     if (!t) return;
     if (t.dataset.tpl) state.template = t.dataset.tpl;
     if (t.dataset.col) state.accent = t.dataset.col;
     if (t.dataset.font) state.font = t.dataset.font;
+    if (t.dataset.den) state.density = t.dataset.den;
     renderTools(); update();
+  });
+
+  /* ---------- Import Existing Resume (PDF / TXT / JSON) ---------- */
+  function parseResumeText(rawText) {
+    var next = makeBlank();
+    next.template = state.template;
+    next.accent = state.accent;
+    next.font = state.font;
+    next.density = state.density;
+
+    var rawLines = String(rawText || "").replace(/\r/g, "").split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+    if (!rawLines.length) return next;
+
+    var fullStr = rawLines.join("\n");
+    var emailMatch = fullStr.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+    if (emailMatch) next.basics.email = emailMatch[0];
+
+    var phoneMatch = fullStr.match(/(?:\+?\d{1,3}[\s.-]?)?(?:\(?\d{3,5}\)?[\s.-]?)?\d{3,5}[\s.-]?\d{4,5}/);
+    if (phoneMatch && phoneMatch[0].replace(/\D/g, "").length >= 10) next.basics.phone = phoneMatch[0].trim();
+
+    var urls = fullStr.match(/(?:https?:\/\/)?(?:www\.)?(?:linkedin\.com\/in\/[^\s|,]+|github\.com\/[^\s|,]+|[a-z0-9-]+\.(?:com|io|dev|org|in|me)\/[^\s|,]+)/gi) || [];
+    if (urls[0]) next.basics.link = urls[0].replace(/^https?:\/\//i, "");
+    if (urls[1]) next.basics.link2 = urls[1].replace(/^https?:\/\//i, "");
+
+    var HEADING_RE = /^(SUMMARY|PROFILE|OBJECTIVE|ABOUT ME|WORK EXPERIENCE|EXPERIENCE|EMPLOYMENT|EDUCATION|ACADEMICS|SKILLS|TECHNICAL SKILLS|CORE COMPETENCIES|PROJECTS|PERSONAL PROJECTS|SOFT SKILLS?|CERTIFICATIONS?|AWARDS?|HONORS?|LANGUAGES?|VOLUNTEERING|PUBLICATIONS?)$/i;
+
+    var buckets = { header: [] };
+    var currentSec = "header";
+    rawLines.forEach(function (ln) {
+      var cleanH = ln.replace(/[:|•-]+$/g, "").trim();
+      if (HEADING_RE.test(cleanH)) {
+        var u = cleanH.toUpperCase();
+        if (/SUMMARY|PROFILE|OBJECTIVE|ABOUT/.test(u)) currentSec = "summary";
+        else if (/EXPERIENCE|EMPLOYMENT/.test(u)) currentSec = "experience";
+        else if (/EDUCATION|ACADEMIC/.test(u)) currentSec = "education";
+        else if (/TECHNICAL SKILLS|^SKILLS$|COMPETENCIES/.test(u)) currentSec = "skills";
+        else if (/PROJECT/.test(u)) currentSec = "projects";
+        else {
+          currentSec = "custom:" + cleanH;
+          if (!buckets[currentSec]) buckets[currentSec] = [];
+        }
+        return;
+      }
+      if (!buckets[currentSec]) buckets[currentSec] = [];
+      buckets[currentSec].push(ln);
+    });
+
+    var headerClean = buckets.header.filter(function (ln) {
+      if (next.basics.email && ln.indexOf(next.basics.email) >= 0) return false;
+      if (next.basics.phone && ln.indexOf(next.basics.phone) >= 0) return false;
+      if (/linkedin\.com|github\.com/i.test(ln)) return false;
+      return true;
+    });
+    if (headerClean[0]) next.basics.name = headerClean[0];
+    if (headerClean[1] && headerClean[1].length < 75) next.basics.title = headerClean[1];
+    headerClean.slice(1).forEach(function (ln) {
+      if (!next.basics.location && /,\s*[A-Za-z]{2,}/.test(ln) && ln.length < 45 && ln !== next.basics.title) {
+        next.basics.location = ln;
+      }
+    });
+
+    if (buckets.summary && buckets.summary.length) {
+      next.summary = p(buckets.summary.join(" "));
+    }
+
+    var DATE_RE = /((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{4}|\b20\d{2})\s*[-–—to]+\s*(Present|Current|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s*\d{4}|\b20\d{2})/i;
+
+    function parseEntries(arr, mode) {
+      if (!arr || !arr.length) return [];
+      var items = [], cur = null;
+      arr.forEach(function (ln) {
+        var isBullet = /^[•\-*▪◦]/.test(ln);
+        var dtMatch = ln.match(DATE_RE);
+        if (!isBullet && (dtMatch || !cur || (cur.bullets.length > 0 && ln.length < 85 && !/[.!?]$/.test(ln)))) {
+          if (cur) items.push(cur);
+          cur = { title: ln.replace(DATE_RE, "").replace(/[|–-]+$/g, "").trim(), sub: "", start: dtMatch ? dtMatch[1] : "", end: dtMatch ? dtMatch[2] : "", bullets: [] };
+        } else if (cur) {
+          if (!isBullet && !cur.sub && cur.bullets.length === 0 && ln.length < 80) {
+            if (dtMatch && !cur.start) {
+              cur.start = dtMatch[1];
+              cur.end = dtMatch[2];
+              cur.sub = ln.replace(DATE_RE, "").trim();
+            } else {
+              cur.sub = ln;
+            }
+          } else {
+            cur.bullets.push(ln.replace(/^[•\-*▪◦]\s*/, ""));
+          }
+        }
+      });
+      if (cur) items.push(cur);
+
+      return items.map(function (it) {
+        if (mode === "experience") {
+          return {
+            role: it.title,
+            company: it.sub,
+            start: it.start,
+            end: /present|current/i.test(it.end) ? "" : it.end,
+            current: /present|current/i.test(it.end),
+            desc: it.bullets.length ? ul(it.bullets) : ""
+          };
+        }
+        if (mode === "education") {
+          var cgpaMatch = (it.title + " " + it.sub + " " + it.bullets.join(" ")).match(/(?:CGPA|GPA|Percentage|Score)\s*[:\-]?\s*[\d.%\/]+/i);
+          return {
+            degree: it.title,
+            school: it.sub,
+            start: it.start,
+            end: it.end,
+            score: cgpaMatch ? cgpaMatch[0] : "",
+            desc: it.bullets.length ? ul(it.bullets) : ""
+          };
+        }
+        return {
+          name: it.title,
+          link: (it.sub.match(/(?:github\.com|https?:\/\/)\S+/i) || [""])[0],
+          desc: it.bullets.length ? ul(it.bullets) : p(it.sub)
+        };
+      });
+    }
+
+    var parsedExp = parseEntries(buckets.experience, "experience");
+    if (parsedExp.length) next.experience = parsedExp;
+
+    var parsedEdu = parseEntries(buckets.education, "education");
+    if (parsedEdu.length) next.education = parsedEdu;
+
+    var parsedProj = parseEntries(buckets.projects, "projects");
+    if (parsedProj.length) next.projects = parsedProj;
+
+    if (buckets.skills && buckets.skills.length) {
+      var hasColons = buckets.skills.some(function (l) { return /^[A-Za-z &/]+:\s*.+/.test(l); });
+      if (hasColons) {
+        next.skillsStyle = "grouped";
+        next.skills = buckets.skills.map(function (l) { return l.replace(/^[•\-*]\s*/, ""); }).join("\n");
+      } else {
+        next.skillsStyle = "boxes";
+        next.skills = buckets.skills.map(function (l) { return l.replace(/^[•\-*]\s*/, ""); }).join(", ").replace(/,\s*,/g, ",");
+      }
+    }
+
+    Object.keys(buckets).forEach(function (k) {
+      if (k.indexOf("custom:") !== 0) return;
+      var cLabel = k.slice(7);
+      var cLines = buckets[k];
+      if (!cLines || !cLines.length) return;
+      var cid = "custom_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 5);
+      next.customSections[cid] = {
+        label: cLabel,
+        type: "chips",
+        chipStyle: "inline",
+        items: [blankCustomEntry()],
+        chips: cLines.join(", "),
+        rich: ""
+      };
+      next.order.push(cid);
+    });
+
+    return normalize(next);
+  }
+
+  async function extractPdfText(arrayBuffer) {
+    if (!window.pdfjsLib) throw new Error("PDF parser library unavailable");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    var pagesText = [];
+    for (var pNum = 1; pNum <= pdf.numPages; pNum++) {
+      var page = await pdf.getPage(pNum);
+      var content = await page.getTextContent();
+      var lastY = null, line = "", linesOut = [];
+      content.items.forEach(function (item) {
+        var y = item.transform ? Math.round(item.transform[5]) : 0;
+        if (lastY !== null && Math.abs(y - lastY) > 4) {
+          if (line.trim()) linesOut.push(line.trim());
+          line = item.str;
+        } else {
+          line += (line && !/\s$/.test(line) && !/^\s/.test(item.str) ? " " : "") + item.str;
+        }
+        lastY = y;
+      });
+      if (line.trim()) linesOut.push(line.trim());
+      pagesText.push(linesOut.join("\n"));
+    }
+    return pagesText.join("\n");
+  }
+
+  $("importBtn").addEventListener("click", function () {
+    $("importFile").value = "";
+    $("importFile").click();
+  });
+
+  $("importFile").addEventListener("change", async function (e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      if (/\.json$/i.test(file.name)) {
+        var jsonText = await file.text();
+        var parsedJson = JSON.parse(jsonText);
+        if (parsedJson && parsedJson.basics) {
+          replaceState(parsedJson);
+          toast("Loaded JSON resume: " + file.name);
+          return;
+        }
+      }
+      var extracted = "";
+      if (/\.pdf$/i.test(file.name) || file.type === "application/pdf") {
+        toast("Reading PDF resume…");
+        var buf = await file.arrayBuffer();
+        extracted = await extractPdfText(buf);
+      } else {
+        extracted = await file.text();
+      }
+      var importedState = parseResumeText(extracted);
+      replaceState(importedState);
+      toast("Imported resume — review & refine each section");
+    } catch (err) {
+      console.error(err);
+      toast("Could not parse file. Try a text-based PDF, TXT, or JSON.");
+    }
   });
 
   /* ---------- Mobile Tabs ---------- */
   function setView(v) {
     var m = $("main"); m.className = "workspace " + (v === "edit" ? "show-edit" : "show-preview");
-    $("tabEdit").classList.toggle("on", v === "edit");
-    $("tabPreview").classList.toggle("on", v !== "edit");
+    $("tabEdit").classList.toggle("on", v === "edit"); $("tabPreview").classList.toggle("on", v !== "edit");
     fit();
   }
   $("tabEdit").addEventListener("click", function () { setView("edit"); });
