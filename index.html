@@ -39,6 +39,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+body { margin: 0; }
 [hidden] { display: none !important; }
 html, body { min-width: 0; }
 body {
@@ -194,7 +195,10 @@ input[aria-invalid="true"] { border-color: var(--warn); }
 
 @media print {
   @page { size: A4; margin: 0; }
-  html, body { background: #fff !important; padding: 0 !important; }
+  html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; height: auto !important; }
+  .paper { width: 100% !important; }
+  .paper, .t-sidebar .wrap2 { min-height: 1122px !important; }
+  .t-sidebar .wrap2 { grid-template-columns: 236px 1fr !important; }
   body::before, .top, #editPane, .tools, #txtbox, #pdfnote, #toast, .pbreak { display: none !important; }
   main { display: block !important; padding: 0 !important; }
   #previewPane { display: block !important; }
