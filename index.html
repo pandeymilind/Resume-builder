@@ -1,12 +1,9 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Plainleaf Resume Builder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=Source+Serif+4:wght@400;600;700&display=swap">
 <style>
-/* Layout: sticky slim header, two panes (editor | live A4 preview). Under 900px the panes become Edit / Preview tabs. */
+/* Layout: slim sticky header; left section menu + one open section form + live A4 preview. Under 1180px the menu becomes a row of tabs; under 900px the panes become Edit / Preview tabs. */
 :root {
   --bg: #f1f4f3;
   --surface: #ffffff;
@@ -39,6 +36,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { min-width: 0; }
 body {
   background: var(--bg); color: var(--fg); font: 14px/1.45 var(--font-ui);
@@ -62,29 +60,63 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .btn.sm { padding: 5px 9px; font-size: 13px; }
 .btn[aria-pressed="true"], .btn.on { background: var(--accent-soft); border-color: var(--accent); }
+.btn.primary.on { background: var(--accent); }
 
-main { display: grid; grid-template-columns: minmax(340px, 440px) minmax(0, 1fr); gap: 24px; padding-top: 20px; align-items: start; }
+main { display: grid; grid-template-columns: minmax(340px, 460px) minmax(0, 1fr); gap: 24px; padding-top: 20px; align-items: start; }
 .pane { min-width: 0; }
+
+/* Section menu */
+.edit-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.nav button { flex: none; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 8px 12px; font-weight: 500; white-space: nowrap; text-align: left; }
+.nav button:hover { border-color: var(--accent); }
+.nav button[aria-current="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.nav .badge { margin-left: auto; font-size: 12px; font-variant-numeric: tabular-nums; opacity: .85; }
+.nav .div { flex: none; width: 1px; background: var(--line); margin: 2px 2px; }
+
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
-.card > .hd { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
-.card h2 { font: 700 16px/1.2 var(--font-display); margin: 0 auto 0 0; }
+.card > .hd { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.card h2 { font: 700 17px/1.2 var(--font-display); text-transform: uppercase; letter-spacing: .05em; margin: 0 auto 0 0; }
+.hd .ctl { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .note { color: var(--muted); font-size: 12.5px; margin: 0 0 12px; }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.fld { display: flex; flex-direction: column; gap: 4px; min-width: 0; margin-bottom: 10px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+.fld { display: flex; flex-direction: column; gap: 4px; min-width: 0; margin-bottom: 12px; }
 .fld.full { grid-column: 1 / -1; }
-.fld label { font-size: 12px; color: var(--muted); font-weight: 500; }
+.fld label, .lbl { font-size: 12px; color: var(--muted); font-weight: 500; }
+.fld label.chk { display: flex; align-items: center; gap: 8px; color: var(--fg); font-size: 13px; }
+input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); margin: 0; }
 input[type=text], textarea {
   width: 100%; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
 }
+input[type=text]:disabled { opacity: .5; }
 textarea { resize: vertical; min-height: 64px; }
 input:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px var(--accent-soft); }
+input[aria-invalid="true"] { border-color: var(--warn); }
 .entry { border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 4px; }
-.entry .eh { display: flex; align-items: center; margin-bottom: 8px; font-weight: 600; font-size: 13px; }
+.entry:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+.entry .eh { display: flex; align-items: center; margin-bottom: 10px; font-weight: 600; font-size: 13px; }
 .entry .eh span { margin-right: auto; }
-.iconbtn { border: 1px solid var(--line); background: var(--surface); width: 28px; height: 28px; border-radius: 6px; line-height: 1; display: inline-grid; place-items: center; font-size: 14px; }
+.iconbtn { border: 1px solid var(--line); background: var(--surface); min-width: 30px; height: 30px; padding: 0 8px; border-radius: 6px; line-height: 1; display: inline-grid; place-items: center; font-size: 14px; }
 .iconbtn:hover { border-color: var(--accent); }
 .iconbtn:disabled { opacity: .35; cursor: default; }
 .link-danger:hover { border-color: var(--warn); color: var(--warn); }
+.btn.warn { border-color: var(--warn); color: var(--warn); }
+
+/* Rich text box */
+.rte { border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+.rte:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.rte-bar { display: flex; gap: 2px; padding: 5px; border-bottom: 1px solid var(--line); background: var(--surface); border-radius: 6px 6px 0 0; }
+.rte-bar button { width: 34px; height: 30px; border: 1px solid transparent; background: transparent; border-radius: 5px; font-size: 14px; display: inline-grid; place-items: center; padding: 0; }
+.rte-bar button:hover { border-color: var(--line); background: var(--bg); }
+.rte-bar svg { width: 16px; height: 16px; }
+.rte-link { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; border-bottom: 1px solid var(--line); background: var(--surface); }
+.rte-link input { flex: 1 1 170px; min-width: 0; }
+.rte-body { min-height: 92px; padding: 8px 10px; outline: none; overflow-wrap: anywhere; position: relative; }
+.rte-body.is-empty::before { content: attr(data-ph); color: var(--muted); position: absolute; pointer-events: none; }
+.rte-body ul, .rte-body ol { margin: 4px 0; padding-left: 22px; }
+.rte-body p { margin: 0 0 4px; }
+.rte-body li p { margin: 0; }
+.rte-body a { color: var(--accent); text-decoration: underline; }
 
 .score { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; }
 .score .num { font: 700 34px/1 var(--font-display); font-variant-numeric: tabular-nums; }
@@ -118,8 +150,10 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
 .paper .contact { display: flex; flex-wrap: wrap; gap: 3px 16px; margin-top: 10px; color: var(--ink-muted); font-size: 12.5px; }
 .paper h3 { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ra); margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 1.5px solid var(--ra); font-weight: 700; }
 .paper p { margin: 0 0 6px; }
-.paper ul { margin: 4px 0 0; padding-left: 18px; }
+.paper ul, .paper ol { margin: 4px 0 0; padding-left: 18px; }
 .paper li { margin-bottom: 2px; }
+.paper li p { margin: 0; }
+.paper .rich p { margin: 0 0 4px; }
 .paper .ent { margin-bottom: 12px; }
 .paper .row { display: flex; justify-content: space-between; gap: 16px; }
 .paper .row b { font-weight: 700; }
@@ -129,6 +163,8 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
 .paper .chip { border: 1px solid var(--ra); color: var(--ink); padding: 1px 9px; border-radius: 3px; font-size: 12.5px; }
 .paper .lnk { color: var(--ra); font-size: 12.5px; }
 .paper .empty { color: var(--ink-muted); }
+.paper a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.paper .lnk a, .paper .rich a { color: var(--ra); }
 /* Classic */
 .t-classic header { text-align: center; }
 .t-classic .contact { justify-content: center; }
@@ -148,8 +184,6 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
 .t-sidebar .main h1 { font-size: 32px; }
 .pbreak { position: absolute; left: 0; right: 0; border-top: 1px dashed #c0392b; font-size: 11px; color: #c0392b; text-align: right; padding-right: 10px; }
 
-.paper a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
-.paper .lnk a { color: var(--ra); }
 .pdfnote { margin-bottom: 12px; border: 1px solid var(--line); background: var(--accent-soft); border-radius: 6px; padding: 10px 12px; font-size: 13px; }
 .pdfnote p { margin: 0 0 4px; }
 
@@ -164,6 +198,13 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
   .paper .ent, .paper li { break-inside: avoid; }
 }
 
+@media (min-width: 1180px) {
+  main { grid-template-columns: minmax(540px, 620px) minmax(0, 1fr); }
+  .edit-wrap { grid-template-columns: 176px minmax(0, 1fr); align-items: start; }
+  .nav { flex-direction: column; overflow: visible; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); padding-bottom: 0; }
+  .nav button { width: 100%; }
+  .nav .div { width: auto; height: 1px; margin: 2px 0; }
+}
 @media (max-width: 899px) {
   .tabs { display: flex; }
   main { grid-template-columns: minmax(0, 1fr); }
@@ -173,8 +214,6 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
 @media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
 </style>
 
-</head>
-<body>
 <div class="top">
   <div class="brand">
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="2" width="18" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 7h10M7 11h10M7 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -190,18 +229,9 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
 
 <main class="show-edit" id="main">
   <section class="pane" id="editPane" aria-label="Resume editor">
-    <div class="card">
-      <div class="hd"><h2>Resume check</h2></div>
-      <div id="score"></div>
-    </div>
-    <div id="editor"></div>
-    <div class="card">
-      <div class="hd"><h2>Start over</h2></div>
-      <p class="note">Everything saves in this browser as you type. The text shown first is an example resume.</p>
-      <div style="display:flex; gap:8px; flex-wrap:wrap">
-        <button class="btn sm" id="btnSample" type="button">Load example</button>
-        <button class="btn sm" id="btnBlank" type="button">Start blank</button>
-      </div>
+    <div class="edit-wrap">
+      <nav class="nav" id="nav" aria-label="Resume sections"></nav>
+      <div id="editor"></div>
     </div>
   </section>
 
@@ -227,171 +257,382 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
 
 <script>
 (function () {
-  var KEY = "plainleaf.v1";
+  var KEY = "plainleaf.v2", OLDKEY = "plainleaf.v1";
   var PAGE_H = 1123;
+  var $ = function (id) { return document.getElementById(id); };
+  var editor = $("editor"), nav = $("nav"), paper = $("paper"), stage = $("stage");
 
-  var SAMPLE = {
-    template: "classic", accent: "#1f6f5c", font: "sans",
-    order: ["summary", "experience", "education", "skills", "projects"],
-    basics: { name: "Resume Builder", title: "Junior Data Analyst", email: "resume.builder@example.com", phone: "+91 123468899", location: "Indore, India", link: "linkedin.com/in/xyz" },
-    summary: "Data analyst with two years of experience turning messy sales and operations data into weekly reports that managers act on. Comfortable with SQL, Python and Power BI, and keen to move into forecasting work.",
-    experience: [
-      { role: "Data Analyst Intern", company: "Brightwell Logistics", start: "Jan 2025", end: "Present",
-        bullets: "Built a Power BI dashboard tracking 12 delivery KPIs, replacing a manual report that took 6 hours each week\nCleaned and merged 400,000+ shipment records with Python and pandas, cutting data errors by 35%\nPresented route delay findings to the operations head, which led to two depots changing their dispatch times" },
-      { role: "Operations Associate", company: "Kiran Retail", start: "Jun 2023", end: "Dec 2024",
-        bullets: "Maintained stock sheets for 8 stores and flagged slow movers each month\nTrained 5 new staff on the inventory tool, shortening onboarding from 2 weeks to 1" }
-    ],
-    education: [
-      { degree: "B.Sc. Statistics", school: "Holkar Science College, Indore", start: "2020", end: "2023", note: "First class with distinction. Final-year project on demand forecasting for local retail." }
-    ],
-    skills: "SQL, Python, pandas, Power BI, Excel, Data cleaning, Dashboards, Statistics",
-    projects: [
-      { name: "City Rainfall Explorer", link: "github.com/example/rainfall", desc: "Interactive charts of 30 years of monthly rainfall for Madhya Pradesh districts, built with Python and Plotly." }
-    ]
-  };
-  var BLANK = {
-    template: "classic", accent: "#1f6f5c", font: "sans",
-    order: ["summary", "experience", "education", "skills", "projects"],
-    basics: { name: "", title: "", email: "", phone: "", location: "", link: "" },
-    summary: "", experience: [{ role: "", company: "", start: "", end: "", bullets: "" }],
-    education: [{ degree: "", school: "", start: "", end: "", note: "" }], skills: "", projects: []
-  };
+  /* ---------- Helpers ---------- */
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function lines(s) { return String(s || "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean); }
+  function dates(a, b) { return [a, b].filter(function (x) { return x && String(x).trim(); }).join(" – "); }
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 2200); }
 
-  var SCHEMA = {
-    summary: { label: "Summary", kind: "text", ph: "Two or three sentences on what you do, what you are good at and what you want next.", rows: 4 },
-    experience: { label: "Experience", kind: "list", item: "Role", fields: [
-      { k: "role", l: "Job title" }, { k: "company", l: "Company" },
-      { k: "start", l: "Start", ph: "Jun 2024", half: 1 }, { k: "end", l: "End", ph: "Present", half: 1 },
-      { k: "bullets", l: "Achievements (one per line)", area: 1, ph: "Start with a verb and add a number where you can." }
-    ] },
-    education: { label: "Education", kind: "list", item: "Course", fields: [
+  function safeHref(v) {
+    v = String(v || "").trim();
+    if (!v || /\s/.test(v)) return "";
+    if (/^(https?:|mailto:|tel:)/i.test(v)) return v;
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "mailto:" + v;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return "";
+    return "https://" + v;
+  }
+  function cleanNode(node) {
+    var out = "";
+    node.childNodes.forEach(function (n) {
+      if (n.nodeType === 3) { out += esc(n.nodeValue); return; }
+      if (n.nodeType !== 1) return;
+      var tag = n.tagName;
+      if (tag === "SCRIPT" || tag === "STYLE") return;
+      var inner = cleanNode(n);
+      if (tag === "B" || tag === "STRONG") out += "<b>" + inner + "</b>";
+      else if (tag === "I" || tag === "EM") out += "<i>" + inner + "</i>";
+      else if (tag === "U") out += "<u>" + inner + "</u>";
+      else if (tag === "UL") out += "<ul>" + inner + "</ul>";
+      else if (tag === "OL") out += "<ol>" + inner + "</ol>";
+      else if (tag === "LI") out += "<li>" + inner + "</li>";
+      else if (tag === "BR") out += "<br>";
+      else if (tag === "P" || tag === "DIV") out += "<p>" + inner + "</p>";
+      else if (tag === "A") {
+        var h = safeHref(n.getAttribute("href"));
+        out += h ? '<a href="' + esc(h) + '" target="_blank" rel="noopener noreferrer">' + inner + "</a>" : inner;
+      } else out += inner;
+    });
+    return out;
+  }
+  function sanitize(html) {
+    var doc = new DOMParser().parseFromString("<body>" + String(html || ""), "text/html");
+    return cleanNode(doc.body);
+  }
+  function htmlToText(html) {
+    var doc = new DOMParser().parseFromString("<body>" + sanitize(html), "text/html"), out = "";
+    function nl() { if (out && !/\n$/.test(out)) out += "\n"; }
+    (function walk(n) {
+      n.childNodes.forEach(function (c) {
+        if (c.nodeType === 3) { out += c.nodeValue; return; }
+        if (c.nodeType !== 1) return;
+        var t = c.tagName;
+        if (t === "BR") out += "\n";
+        else if (t === "LI") { nl(); out += "- "; walk(c); out += "\n"; }
+        else if (t === "UL" || t === "OL") { nl(); walk(c); }
+        else if (t === "P") { nl(); walk(c); nl(); }
+        else walk(c);
+      });
+    })(doc.body);
+    return out.replace(/\n{3,}/g, "\n\n").trim();
+  }
+  function isEmptyHtml(h) { return htmlToText(h).replace(/^-\s*$/gm, "").trim() === ""; }
+  function textLines(h) { return htmlToText(h).split("\n").map(function (s) { return s.replace(/^-\s*/, "").trim(); }).filter(Boolean); }
+  function p(t) { return t ? "<p>" + esc(t).replace(/\n/g, "<br>") + "</p>" : ""; }
+  function ul(arr) { return arr.length ? "<ul>" + arr.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : ""; }
+
+  /* ---------- Data ---------- */
+  var SEC = {
+    education: { label: "Education", item: "Course", fields: [
       { k: "degree", l: "Degree or course" }, { k: "school", l: "School or college" },
-      { k: "start", l: "Start", half: 1 }, { k: "end", l: "End", half: 1 },
-      { k: "note", l: "Notes (optional)", area: 1 }
+      { k: "start", l: "Start", ph: "Aug 2021", half: 1 }, { k: "end", l: "End", ph: "Jul 2025", half: 1 },
+      { k: "score", l: "GPA or percentage", ph: "CGPA 8.1 or 82%" },
+      { k: "desc", l: "Description (optional)", t: "rich", ph: "Subjects, awards or your final-year project." }
     ] },
-    skills: { label: "Skills", kind: "text", ph: "Separate skills with commas", rows: 3 },
-    projects: { label: "Projects", kind: "list", item: "Project", fields: [
+    experience: { label: "Work Experience", item: "Role", fields: [
+      { k: "role", l: "Job title" }, { k: "company", l: "Company" },
+      { k: "start", l: "Start", ph: "Jun 2024", half: 1 }, { k: "end", l: "End", ph: "Dec 2025", half: 1 },
+      { k: "current", l: "Currently working here", t: "check" },
+      { k: "desc", l: "Description", t: "rich", ph: "Use bullets. Start with a verb and add a number where you can." }
+    ] },
+    skills: { label: "Skills" },
+    projects: { label: "Projects", item: "Project", fields: [
       { k: "name", l: "Project name" }, { k: "link", l: "Link (optional)" },
-      { k: "desc", l: "What it does", area: 1 }
+      { k: "desc", l: "Description", t: "rich", ph: "What it does and which tools you used." }
     ] }
   };
   var BASICS = [
-    ["name", "Full name"], ["title", "Job title"], ["email", "Email"], ["phone", "Phone"], ["location", "City"], ["link", "Website or LinkedIn"]
+    { k: "name", l: "Name" }, { k: "title", l: "Job title" }, { k: "summary", l: "Summary", t: "rich", ph: "Two or three sentences on what you do, what you are good at and what you want next." },
+    { k: "email", l: "Email", half: 1 }, { k: "phone", l: "Phone", half: 1 },
+    { k: "link", l: "Website 1" }, { k: "link2", l: "Website 2", ph: "github.com/your-name", half: 1 }, { k: "location", l: "Location", half: 1 }
   ];
+  var NAV = [["basics", "Personal Details"], ["education", "Education"], ["experience", "Work Experience"], ["skills", "Skills"], ["projects", "Projects"], ["check", "Resume check"]];
+  var ORDERABLE = { education: 1, experience: 1, skills: 1, projects: 1 };
   var TEMPLATES = [["classic", "Classic"], ["modern", "Modern"], ["sidebar", "Sidebar"]];
   var COLORS = [["#1f6f5c", "Teal"], ["#3a4db7", "Indigo"], ["#b3322e", "Crimson"], ["#334155", "Slate"], ["#9a5b00", "Amber"]];
   var FONTS = [["sans", "Sans"], ["serif", "Serif"]];
 
-  var state = load();
-  var $ = function (id) { return document.getElementById(id); };
-  var editor = $("editor"), paper = $("paper"), stage = $("stage");
+  function blankItem(id) { var o = {}; SEC[id].fields.forEach(function (f) { o[f.k] = f.t === "check" ? false : ""; }); return o; }
+  function makeBlank() {
+    return {
+      template: "classic", accent: "#1f6f5c", font: "sans", active: "basics", hide: {},
+      order: ["experience", "education", "skills", "projects"],
+      basics: { name: "", title: "", email: "", phone: "", location: "", link: "", link2: "" },
+      summary: "", experience: [blankItem("experience")], education: [blankItem("education")], skills: "", projects: []
+    };
+  }
+  var SAMPLE = {
+    template: "classic", accent: "#1f6f5c", font: "sans", active: "basics", hide: {},
+    order: ["experience", "education", "skills", "projects"],
+    basics: { name: "Riya Sharma", title: "Junior Data Analyst", email: "riya.sharma@example.com", phone: "+91 98765 43210", location: "Indore, India", link: "linkedin.com/in/riya-sharma", link2: "github.com/example" },
+    summary: "<p>Data analyst with two years of experience turning messy sales and operations data into weekly reports that managers act on. Comfortable with <b>SQL</b>, <b>Python</b> and <b>Power BI</b>, and keen to move into forecasting work.</p>",
+    experience: [
+      { role: "Data Analyst Intern", company: "Brightwell Logistics", start: "Jan 2025", end: "", current: true,
+        desc: ul(["Built a Power BI dashboard tracking 12 delivery KPIs, replacing a manual report that took 6 hours each week", "Cleaned and merged 400,000+ shipment records with Python and pandas, cutting data errors by 35%", "Presented route delay findings to the operations head, which led to two depots changing their dispatch times"]) },
+      { role: "Operations Associate", company: "Kiran Retail", start: "Jun 2023", end: "Dec 2024", current: false,
+        desc: ul(["Maintained stock sheets for 8 stores and flagged slow movers each month", "Trained 5 new staff on the inventory tool, shortening onboarding from 2 weeks to 1"]) }
+    ],
+    education: [
+      { degree: "B.Sc. Statistics", school: "Holkar Science College, Indore", start: "2020", end: "2023", score: "CGPA 8.1", desc: "<p>First class with distinction. Final-year project on demand forecasting for local retail.</p>" }
+    ],
+    skills: "SQL, Python, pandas, Power BI, Excel, Data cleaning, Dashboards, Statistics",
+    projects: [
+      { name: "City Rainfall Explorer", link: "github.com/example/rainfall", desc: "<p>Interactive charts of 30 years of monthly rainfall for Madhya Pradesh districts, built with <i>Python</i> and Plotly.</p>" }
+    ]
+  };
 
-  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function migrate(o) {
+    var s = makeBlank();
+    ["template", "accent", "font"].forEach(function (k) { if (o[k]) s[k] = o[k]; });
+    Object.keys(s.basics).forEach(function (k) { if (o.basics && o.basics[k]) s.basics[k] = o.basics[k]; });
+    s.summary = p(o.summary || ""); s.skills = o.skills || "";
+    if (o.experience && o.experience.length) s.experience = o.experience.map(function (x) { return { role: x.role || "", company: x.company || "", start: x.start || "", end: x.end || "", current: /^present$/i.test(x.end || ""), desc: ul(lines(x.bullets)) }; });
+    if (o.education && o.education.length) s.education = o.education.map(function (x) { return { degree: x.degree || "", school: x.school || "", start: x.start || "", end: x.end || "", score: "", desc: p(x.note || "") }; });
+    s.projects = (o.projects || []).map(function (x) { return { name: x.name || "", link: x.link || "", desc: p(x.desc || "") }; });
+    return s;
+  }
+  function normalize(s) {
+    var b = makeBlank();
+    s.hide = s.hide || {};
+    s.active = NAV.some(function (n) { return n[0] === s.active; }) ? s.active : "basics";
+    s.basics = Object.assign(b.basics, s.basics || {});
+    var order = (s.order || []).filter(function (i) { return ORDERABLE[i]; });
+    Object.keys(ORDERABLE).forEach(function (i) { if (order.indexOf(i) < 0) order.push(i); });
+    s.order = order;
+    ["experience", "education", "projects"].forEach(function (k) { if (!Array.isArray(s[k])) s[k] = b[k]; });
+    s.summary = s.summary || ""; s.skills = s.skills || "";
+    return s;
+  }
   function load() {
     try {
       var raw = localStorage.getItem(KEY);
-      if (raw) { var s = JSON.parse(raw); if (s && s.basics && s.order) return s; }
+      if (raw) { var s = JSON.parse(raw); if (s && s.basics && s.order) return normalize(s); }
+      var old = localStorage.getItem(OLDKEY);
+      if (old) { var o = JSON.parse(old); if (o && o.basics) return normalize(migrate(o)); }
     } catch (e) {}
-    return clone(SAMPLE);
+    return normalize(clone(SAMPLE));
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function lines(s) { return String(s || "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean); }
-  function skillsArr() { return String(state.skills || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean); }
-  function dates(a, b) { return [a, b].filter(function (x) { return x && x.trim(); }).join(" – "); }
-  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 2200); }
+  var state = load();
 
-  /* ---------- Editor ---------- */
-  function fieldHTML(f, attrs, val, id) {
-    var cls = "fld" + (f.half ? "" : " full");
-    var inp = f.area
-      ? '<textarea id="' + id + '" ' + attrs + ' rows="' + (f.k === "bullets" ? 5 : 3) + '" placeholder="' + esc(f.ph || "") + '">' + esc(val) + "</textarea>"
-      : '<input type="text" id="' + id + '" ' + attrs + ' value="' + esc(val) + '" placeholder="' + esc(f.ph || "") + '">';
-    return '<div class="' + cls + '"><label for="' + id + '">' + esc(f.l) + "</label>" + inp + "</div>";
+  /* ---------- Editor: menu ---------- */
+  function renderNav() {
+    nav.innerHTML = NAV.map(function (n, i) {
+      return (i === 5 ? '<span class="div" aria-hidden="true"></span>' : "") +
+        '<button type="button" data-nav="' + n[0] + '" aria-current="' + (state.active === n[0]) + '">' + n[1] + (n[0] === "check" ? '<span class="badge" id="navScore"></span>' : "") + "</button>";
+    }).join("");
   }
-  function renderEditor() {
-    var h = '<div class="card"><div class="hd"><h2>Your details</h2></div><div class="grid2">';
-    BASICS.forEach(function (b) {
-      h += fieldHTML({ k: b[0], l: b[1], half: 1 }, 'data-s="basics" data-k="' + b[0] + '"', state.basics[b[0]], "b_" + b[0]);
-    });
-    h += "</div></div>";
-    state.order.forEach(function (id, idx) {
-      var sc = SCHEMA[id];
-      h += '<div class="card"><div class="hd"><h2>' + sc.label + "</h2>";
-      h += '<button type="button" class="iconbtn" data-act="up" data-s="' + id + '" aria-label="Move ' + sc.label + ' up"' + (idx === 0 ? " disabled" : "") + ">↑</button>";
-      h += '<button type="button" class="iconbtn" data-act="down" data-s="' + id + '" aria-label="Move ' + sc.label + ' down"' + (idx === state.order.length - 1 ? " disabled" : "") + ">↓</button></div>";
-      if (sc.kind === "text") {
-        h += '<div class="fld"><textarea id="t_' + id + '" data-s="' + id + '" rows="' + sc.rows + '" placeholder="' + esc(sc.ph) + '" aria-label="' + sc.label + '">' + esc(state[id]) + "</textarea></div>";
-      } else {
-        h += '<div class="items">';
-        state[id].forEach(function (it, i) {
-          h += '<div class="entry"><div class="eh"><span>' + sc.item + " " + (i + 1) + '</span><button type="button" class="iconbtn link-danger" data-act="del" data-s="' + id + '" data-i="' + i + '" aria-label="Remove ' + sc.item + " " + (i + 1) + '">×</button></div><div class="grid2">';
-          sc.fields.forEach(function (f) {
-            h += fieldHTML(f, 'data-s="' + id + '" data-i="' + i + '" data-k="' + f.k + '"', it[f.k], id + "_" + i + "_" + f.k);
-          });
-          h += "</div></div>";
-        });
-        h += '</div><button type="button" class="btn sm" data-act="add" data-s="' + id + '" style="margin-top:12px">+ Add ' + sc.item.toLowerCase() + "</button>";
-      }
-      h += "</div>";
-    });
-    editor.innerHTML = h;
-  }
-
-  editor.addEventListener("input", function (e) {
-    var t = e.target, s = t.dataset.s;
-    if (!s) return;
-    if (s === "basics") state.basics[t.dataset.k] = t.value;
-    else if (t.dataset.i !== undefined) state[s][+t.dataset.i][t.dataset.k] = t.value;
-    else state[s] = t.value;
-    update();
+  nav.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-nav]");
+    if (!b) return;
+    state.active = b.dataset.nav; save(); armed.key = null;
+    renderNav(); renderPanel(); renderScore();
   });
+
+  /* ---------- Editor: panel (one section at a time) ---------- */
+  var ICON_LIST = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="4.5" cy="6" r="1.5" fill="currentColor"/><circle cx="4.5" cy="12" r="1.5" fill="currentColor"/><circle cx="4.5" cy="18" r="1.5" fill="currentColor"/></svg>';
+  var ICON_LINK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>';
+  function tbBtn(cmd, label, inner) { return '<button type="button" data-act="cmd" data-cmd="' + cmd + '" title="' + label + '" aria-label="' + label + '">' + inner + "</button>"; }
+  function rteHTML(id, attrs, val, ph) {
+    var s = sanitize(val), empty = isEmptyHtml(s) && !/<li/.test(s);
+    return '<div class="rte"><div class="rte-bar" role="toolbar" aria-label="Text formatting">' +
+      tbBtn("insertUnorderedList", "Bullet list", ICON_LIST) + tbBtn("bold", "Bold", "<b>B</b>") + tbBtn("italic", "Italic", "<i>I</i>") + tbBtn("underline", "Underline", "<u>U</u>") +
+      '<button type="button" data-act="link" title="Add link" aria-label="Add link">' + ICON_LINK + "</button></div>" +
+      '<div class="rte-link" hidden><input type="text" id="' + id + '_url" placeholder="https://example.com" aria-label="Link address">' +
+      '<button type="button" class="btn sm primary" data-act="link-apply">Apply</button><button type="button" class="btn sm" data-act="link-remove">Remove link</button><button type="button" class="btn sm" data-act="link-close">Cancel</button></div>' +
+      '<div class="rte-body' + (empty ? " is-empty" : "") + '" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="' + id + '_l" data-ph="' + esc(ph || "") + '" id="' + id + '" ' + attrs + ">" + s + "</div></div>";
+  }
+  function fieldHTML(f, attrs, val, id, dis) {
+    if (f.t === "check") return '<div class="fld full"><label class="chk" for="' + id + '"><input type="checkbox" id="' + id + '" ' + attrs + (val ? " checked" : "") + "> " + esc(f.l) + "</label></div>";
+    if (f.t === "rich") return '<div class="fld full"><span class="lbl" id="' + id + '_l">' + esc(f.l) + "</span>" + rteHTML(id, attrs, val, f.ph) + "</div>";
+    return '<div class="fld' + (f.half ? "" : " full") + '"><label for="' + id + '">' + esc(f.l) + '</label><input type="text" id="' + id + '" ' + attrs + ' value="' + esc(val) + '" placeholder="' + esc(f.ph || "") + '"' + (dis ? " disabled" : "") + "></div>";
+  }
+  var armed = { key: null, timer: null };
+  function armBtn(act, id, label) {
+    var on = armed.key === act + ":" + id;
+    return '<button type="button" class="btn sm' + (on ? " warn" : "") + '" data-act="' + act + '" data-s="' + id + '">' + (on ? "Click again to confirm" : label) + "</button>";
+  }
+  function renderPanel() {
+    var id = state.active, h = "";
+    if (id === "check") {
+      h = '<div class="card"><div class="hd"><h2>Resume check</h2></div><div id="score"></div></div>' +
+        '<div class="card"><div class="hd"><h2>Start over</h2></div><p class="note">Everything saves in this browser as you type.</p><div style="display:flex; gap:8px; flex-wrap:wrap">' +
+        armBtn("sample", "all", "Load example") + armBtn("blank", "all", "Start blank") + "</div></div>";
+      editor.innerHTML = h; renderScore(); return;
+    }
+    var label = id === "basics" ? "Personal Details" : SEC[id].label;
+    h = '<div class="card"><div class="hd"><h2>' + label + '</h2><div class="ctl">';
+    if (ORDERABLE[id]) {
+      var idx = state.order.indexOf(id), hid = !!state.hide[id];
+      h += '<button type="button" class="btn sm" data-act="hide" data-s="' + id + '" aria-pressed="' + hid + '" title="Hide this section on the resume">' + (hid ? "Show on resume" : "Hide") + "</button>" +
+        '<button type="button" class="iconbtn" data-act="up" data-s="' + id + '" aria-label="Move ' + label + ' up on the resume"' + (idx === 0 ? " disabled" : "") + ">↑</button>" +
+        '<button type="button" class="iconbtn" data-act="down" data-s="' + id + '" aria-label="Move ' + label + ' down on the resume"' + (idx === state.order.length - 1 ? " disabled" : "") + ">↓</button>";
+    }
+    h += armBtn("reset", id, "Reset") + "</div></div>";
+    if (id === "basics") {
+      h += '<div class="grid2">';
+      BASICS.forEach(function (f) {
+        if (f.k === "summary") h += fieldHTML(f, 'data-s="summary"', state.summary, "summary");
+        else h += fieldHTML(f, 'data-s="basics" data-k="' + f.k + '"', state.basics[f.k], "b_" + f.k);
+      });
+      h += "</div>";
+    } else if (id === "skills") {
+      h += '<p class="note">Separate skills with commas.</p><div class="fld"><textarea id="t_skills" data-s="skills" rows="5" placeholder="SQL, Python, Power BI" aria-label="Skills">' + esc(state.skills) + "</textarea></div>";
+    } else {
+      var sc = SEC[id];
+      if (!state[id].length) h += '<p class="note">No ' + sc.label.toLowerCase() + " added yet.</p>";
+      state[id].forEach(function (it, i) {
+        h += '<div class="entry"><div class="eh"><span>' + sc.item + " " + (i + 1) + '</span><button type="button" class="iconbtn link-danger" data-act="del" data-s="' + id + '" data-i="' + i + '" aria-label="Remove ' + sc.item + " " + (i + 1) + '">×</button></div><div class="grid2">';
+        sc.fields.forEach(function (f) {
+          h += fieldHTML(f, 'data-s="' + id + '" data-i="' + i + '" data-k="' + f.k + '"', it[f.k], id + "_" + i + "_" + f.k, id === "experience" && f.k === "end" && it.current);
+        });
+        h += "</div></div>";
+      });
+      h += '<button type="button" class="btn sm" data-act="add" data-s="' + id + '" style="margin-top:12px">+ Add ' + sc.item.toLowerCase() + "</button>";
+    }
+    editor.innerHTML = h + "</div>";
+  }
+
+  /* ---------- Editor: events ---------- */
+  function cleanStore(body) { var v = sanitize(body.innerHTML); return isEmptyHtml(v) && !/<li/.test(v) ? "" : v; }
+  function syncEmpty(body) { body.classList.toggle("is-empty", !body.textContent.trim() && !body.querySelector("li")); }
+  function onEdit(e) {
+    var t = e.target, s = t.dataset && t.dataset.s;
+    if (!s) return;
+    var isRte = t.classList.contains("rte-body");
+    var v = isRte ? cleanStore(t) : (t.type === "checkbox" ? t.checked : t.value);
+    if (isRte) syncEmpty(t);
+    if (s === "basics") state.basics[t.dataset.k] = v;
+    else if (t.dataset.i !== undefined) state[s][+t.dataset.i][t.dataset.k] = v;
+    else state[s] = v;
+    if (t.type === "checkbox") { var end = $(s + "_" + t.dataset.i + "_end"); if (end) end.disabled = !!v; }
+    update();
+  }
+  editor.addEventListener("input", onEdit);
+  editor.addEventListener("change", onEdit);
+  editor.addEventListener("mousedown", function (e) { if (e.target.closest(".rte-bar button")) e.preventDefault(); });
+  editor.addEventListener("paste", function (e) {
+    if (!e.target.closest || !e.target.closest(".rte-body")) return;
+    e.preventDefault();
+    var txt = (e.clipboardData || window.clipboardData).getData("text/plain");
+    document.execCommand("insertText", false, txt);
+  });
+
+  var savedRange = null;
+  function rteOf(el) { return el.closest(".rte"); }
+  function fireInput(body) { body.dispatchEvent(new Event("input", { bubbles: true })); }
+  function openLink(rte) {
+    var body = rte.querySelector(".rte-body"), bar = rte.querySelector(".rte-link"), inp = bar.querySelector("input");
+    var sel = window.getSelection(), r = sel.rangeCount ? sel.getRangeAt(0) : null;
+    if (!r || !body.contains(r.commonAncestorContainer)) { r = document.createRange(); r.selectNodeContents(body); r.collapse(false); }
+    savedRange = r.cloneRange();
+    var node = r.startContainer.nodeType === 3 ? r.startContainer.parentNode : r.startContainer;
+    var a = node.closest ? node.closest("a") : null;
+    inp.value = a ? a.getAttribute("href") : ""; inp.removeAttribute("aria-invalid");
+    bar.hidden = false; inp.focus(); inp.select();
+  }
+  function closeLink(rte) { rte.querySelector(".rte-link").hidden = true; }
+  function applyLink(rte, remove) {
+    var body = rte.querySelector(".rte-body"), inp = rte.querySelector(".rte-link input");
+    var href = remove ? "" : safeHref(inp.value);
+    if (!remove && !href) { inp.setAttribute("aria-invalid", "true"); inp.focus(); return; }
+    body.focus();
+    var sel = window.getSelection();
+    if (savedRange) { sel.removeAllRanges(); sel.addRange(savedRange); }
+    if (remove) document.execCommand("unlink");
+    else if (savedRange && savedRange.collapsed) document.execCommand("insertHTML", false, '<a href="' + esc(href) + '">' + esc(inp.value.trim()) + "</a>");
+    else document.execCommand("createLink", false, href);
+    closeLink(rte); fireInput(body);
+  }
+  editor.addEventListener("keydown", function (e) {
+    var inp = e.target.closest && e.target.closest(".rte-link input");
+    if (!inp) return;
+    if (e.key === "Enter") { e.preventDefault(); applyLink(rteOf(inp), false); }
+    if (e.key === "Escape") { e.preventDefault(); closeLink(rteOf(inp)); }
+  });
+
+  function doReset(id) {
+    var b = makeBlank();
+    if (id === "basics") { state.basics = b.basics; state.summary = ""; }
+    else if (id === "skills") state.skills = "";
+    else if (id === "projects") state.projects = [];
+    else state[id] = b[id];
+  }
+  function replaceState(src) { var a = state.active; state = normalize(clone(src)); state.active = a; renderNav(); renderPanel(); renderTools(); update(); }
+
   editor.addEventListener("click", function (e) {
     var b = e.target.closest("[data-act]");
     if (!b) return;
     var act = b.dataset.act, s = b.dataset.s, i = +b.dataset.i;
+    if (act === "cmd") {
+      var body = rteOf(b).querySelector(".rte-body");
+      if (document.activeElement !== body) body.focus();
+      document.execCommand(b.dataset.cmd); fireInput(body); return;
+    }
+    if (act === "link") { openLink(rteOf(b)); return; }
+    if (act === "link-apply") { applyLink(rteOf(b), false); return; }
+    if (act === "link-remove") { applyLink(rteOf(b), true); return; }
+    if (act === "link-close") { closeLink(rteOf(b)); return; }
+
+    if (act === "reset" || act === "sample" || act === "blank") {
+      var key = act + ":" + s;
+      if (armed.key === key) {
+        clearTimeout(armed.timer); armed.key = null;
+        if (act === "reset") { doReset(s); renderPanel(); update(); toast("Section cleared"); }
+        else { replaceState(act === "sample" ? SAMPLE : makeBlank()); toast(act === "sample" ? "Example loaded" : "Blank resume ready"); }
+      } else {
+        armed.key = key; clearTimeout(armed.timer);
+        armed.timer = setTimeout(function () { armed.key = null; renderPanel(); }, 3500);
+        renderPanel();
+        var again = editor.querySelector('[data-act="' + act + '"][data-s="' + s + '"]'); if (again) again.focus();
+      }
+      return;
+    }
     if (act === "up" || act === "down") {
       var from = state.order.indexOf(s), to = act === "up" ? from - 1 : from + 1;
       if (to < 0 || to >= state.order.length) return;
       state.order.splice(to, 0, state.order.splice(from, 1)[0]);
+      renderPanel(); update();
+      var keep = editor.querySelector('[data-act="' + act + '"]:not([disabled])') || editor.querySelector('[data-act="' + (act === "up" ? "down" : "up") + '"]:not([disabled])');
+      if (keep) keep.focus();
+    } else if (act === "hide") {
+      state.hide[s] = !state.hide[s]; renderPanel(); update();
     } else if (act === "add") {
-      var blank = {}; SCHEMA[s].fields.forEach(function (f) { blank[f.k] = ""; });
-      state[s].push(blank);
+      state[s].push(blankItem(s)); renderPanel(); update();
+      var ents = editor.querySelectorAll(".entry"), last = ents[ents.length - 1];
+      if (last) { var f = last.querySelector("input"); if (f) f.focus(); }
     } else if (act === "del") {
-      state[s].splice(i, 1);
+      state[s].splice(i, 1); renderPanel(); update();
     }
-    renderEditor(); update();
-    var again = editor.querySelector('[data-act="' + act + '"][data-s="' + s + '"]');
-    if (again && (act === "up" || act === "down")) { var keep = editor.querySelector('[data-act="' + act + '"][data-s="' + s + '"]:not([disabled])'); if (keep) keep.focus(); }
   });
 
   /* ---------- Preview ---------- */
+  function rich(h) { return isEmptyHtml(h) && !/<li/.test(h) ? "" : '<div class="rich">' + sanitize(h) + "</div>"; }
   function sectionHTML(id) {
     var h = "";
-    if (id === "summary") {
-      if (!String(state.summary).trim()) return "";
-      return "<section><h3>Summary</h3><p>" + esc(state.summary).replace(/\n/g, "<br>") + "</p></section>";
-    }
     if (id === "experience") {
-      var xs = state.experience.filter(function (x) { return x.role || x.company || x.bullets; });
+      var xs = state.experience.filter(function (x) { return x.role || x.company || !isEmptyHtml(x.desc); });
       if (!xs.length) return "";
       xs.forEach(function (x) {
-        h += '<div class="ent"><div class="row"><b>' + esc(x.role) + '</b><span class="dt">' + esc(dates(x.start, x.end)) + "</span></div>";
+        h += '<div class="ent"><div class="row"><b>' + esc(x.role) + '</b><span class="dt">' + esc(dates(x.start, x.current ? "Present" : x.end)) + "</span></div>";
         if (x.company) h += '<div class="sub">' + esc(x.company) + "</div>";
-        var bl = lines(x.bullets);
-        if (bl.length) h += "<ul>" + bl.map(function (l) { return "<li>" + esc(l) + "</li>"; }).join("") + "</ul>";
-        h += "</div>";
+        h += rich(x.desc) + "</div>";
       });
-      return "<section><h3>Experience</h3>" + h + "</section>";
+      return "<section><h3>Work Experience</h3>" + h + "</section>";
     }
     if (id === "education") {
       var es = state.education.filter(function (x) { return x.degree || x.school; });
       if (!es.length) return "";
       es.forEach(function (x) {
+        var sub = [x.school, x.score].filter(Boolean).join(" · ");
         h += '<div class="ent"><div class="row"><b>' + esc(x.degree) + '</b><span class="dt">' + esc(dates(x.start, x.end)) + "</span></div>";
-        if (x.school) h += '<div class="sub">' + esc(x.school) + "</div>";
-        if (x.note) h += "<p>" + esc(x.note) + "</p>";
-        h += "</div>";
+        if (sub) h += '<div class="sub">' + esc(sub) + "</div>";
+        h += rich(x.desc) + "</div>";
       });
       return "<section><h3>Education</h3>" + h + "</section>";
     }
@@ -401,17 +642,16 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
       return '<section><h3>Skills</h3><div class="chips">' + sk.map(function (s) { return '<span class="chip">' + esc(s) + "</span>"; }).join("") + "</div></section>";
     }
     if (id === "projects") {
-      var ps = state.projects.filter(function (x) { return x.name || x.desc; });
+      var ps = state.projects.filter(function (x) { return x.name || !isEmptyHtml(x.desc); });
       if (!ps.length) return "";
       ps.forEach(function (x) {
-        h += '<div class="ent"><div class="row"><b>' + esc(x.name) + "</b>" + (x.link ? '<span class="lnk">' + linkHTML(x.link) + "</span>" : "") + "</div>";
-        if (x.desc) h += "<p>" + esc(x.desc) + "</p>";
-        h += "</div>";
+        h += '<div class="ent"><div class="row"><b>' + esc(x.name) + "</b>" + (x.link ? '<span class="lnk">' + linkHTML(x.link) + "</span>" : "") + "</div>" + rich(x.desc) + "</div>";
       });
       return "<section><h3>Projects</h3>" + h + "</section>";
     }
     return "";
   }
+  function skillsArr() { return String(state.skills || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean); }
   function hrefFor(v) {
     v = String(v || "").trim();
     if (!v || /\s/.test(v)) return "";
@@ -433,6 +673,7 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
     }
     if (b.location) items.push("<span>" + esc(b.location) + "</span>");
     if (b.link) items.push("<span>" + linkHTML(b.link) + "</span>");
+    if (b.link2) items.push("<span>" + linkHTML(b.link2) + "</span>");
     return items.join("");
   }
   function headHTML() {
@@ -441,18 +682,20 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
       (b.title ? '<div class="ttl">' + esc(b.title) + "</div>" : "") +
       (state.template === "sidebar" ? "" : '<div class="contact">' + contactItems() + "</div>") + "</header>";
   }
+  function summaryHTML() { return rich(state.summary) ? "<section><h3>Summary</h3>" + rich(state.summary) + "</section>" : ""; }
   function renderPreview() {
     paper.className = "paper t-" + state.template + " f-" + state.font;
     paper.style.setProperty("--ra", state.accent);
+    var shown = state.order.filter(function (i) { return !state.hide[i]; });
     var html;
     if (state.template === "sidebar") {
-      var sk = skillsArr();
+      var sk = skillsArr(), showSk = !state.hide.skills && sk.length;
       var side = '<aside class="side"><h3>Contact</h3><div class="contact">' + contactItems() + "</div>" +
-        (sk.length ? '<h3>Skills</h3><div class="chips">' + sk.map(function (s) { return '<span class="chip">' + esc(s) + "</span>"; }).join("") + "</div>" : "") + "</aside>";
-      var main = '<div class="main">' + headHTML() + state.order.filter(function (i) { return i !== "skills"; }).map(sectionHTML).join("") + "</div>";
+        (showSk ? '<h3>Skills</h3><div class="chips">' + sk.map(function (s) { return '<span class="chip">' + esc(s) + "</span>"; }).join("") + "</div>" : "") + "</aside>";
+      var main = '<div class="main">' + headHTML() + summaryHTML() + shown.filter(function (i) { return i !== "skills"; }).map(sectionHTML).join("") + "</div>";
       html = '<div class="wrap2">' + side + main + "</div>";
     } else {
-      html = '<div class="inner">' + headHTML() + state.order.map(sectionHTML).join("") + "</div>";
+      html = '<div class="inner">' + headHTML() + summaryHTML() + shown.map(sectionHTML).join("") + "</div>";
     }
     paper.innerHTML = html;
     fit();
@@ -462,37 +705,40 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
     paper.style.transform = "scale(" + sc + ")";
     var h = paper.offsetHeight;
     stage.style.height = Math.ceil(h * sc) + "px";
-    var old = paper.querySelectorAll(".pbreak"); old.forEach(function (n) { n.remove(); });
+    paper.querySelectorAll(".pbreak").forEach(function (n) { n.remove(); });
     var pages = Math.max(1, Math.ceil((h - 2) / PAGE_H));
-    for (var p = 1; p < pages; p++) {
-      var d = document.createElement("div"); d.className = "pbreak"; d.style.top = p * PAGE_H + "px"; d.textContent = "Page " + (p + 1) + " starts here"; paper.appendChild(d);
+    for (var pg = 1; pg < pages; pg++) {
+      var d = document.createElement("div"); d.className = "pbreak"; d.style.top = pg * PAGE_H + "px"; d.textContent = "Page " + (pg + 1) + " starts here"; paper.appendChild(d);
     }
     paper._pages = pages;
     $("pageinfo").textContent = pages + (pages === 1 ? " page" : " pages") + " · A4";
     renderScore();
   }
 
-  /* ---------- Score ---------- */
+  /* ---------- Resume check ---------- */
   function renderScore() {
-    var b = state.basics, xs = state.experience.filter(function (x) { return x.role || x.bullets; });
-    var allBullets = []; xs.forEach(function (x) { allBullets = allBullets.concat(lines(x.bullets)); });
-    var sumLen = String(state.summary).trim().length;
+    var b = state.basics, xs = state.experience.filter(function (x) { return x.role || !isEmptyHtml(x.desc); });
+    var allBullets = []; xs.forEach(function (x) { allBullets = allBullets.concat(textLines(x.desc)); });
+    var sumLen = htmlToText(state.summary).length;
     var checks = [
       [b.name && b.title, "Name and job title are filled in", "Add both so a recruiter knows who you are in one glance."],
       [b.email && b.phone, "Email and phone are filled in", "Add both ways to reach you."],
       [sumLen >= 150 && sumLen <= 450, "Summary is 150 to 450 characters", "Yours is " + sumLen + ". Aim for two or three sentences."],
-      [xs.length > 0 && xs.every(function (x) { return lines(x.bullets).length >= 2; }), "Every role has at least two achievements", "Add a second bullet to each role."],
+      [xs.length > 0 && xs.every(function (x) { return textLines(x.desc).length >= 2; }), "Every role has at least two achievements", "Add a second bullet to each role."],
       [allBullets.some(function (l) { return /\d/.test(l); }), "Achievements include numbers", "Add a count, percentage or time saved to at least one bullet."],
       [state.education.some(function (x) { return x.degree || x.school; }), "Education is listed", "Add your degree or course."],
+      [state.education.some(function (x) { return x.score && x.score.trim(); }), "Education has a GPA or percentage", "Add your CGPA or percentage in the Education section."],
       [skillsArr().length >= 5, "At least 5 skills", "List the tools and skills the job asks for."],
       [(paper._pages || 1) === 1, "Fits on one page", "Trim older roles or shorten bullets to get back to one page."]
     ];
     var pass = checks.filter(function (c) { return c[0]; }).length, pct = Math.round(pass / checks.length * 100);
-    var h = '<div class="score"><div class="num">' + pct + "<small>/100</small></div><div><div class=\"bar\" aria-hidden=\"true\"><i style=\"width:" + pct + '%"></i></div></div></div><ul class="checks">';
+    var nb = $("navScore"); if (nb) nb.textContent = pct + "%";
+    var el = $("score"); if (!el) return;
+    var h = '<div class="score"><div class="num">' + pct + '<small>/100</small></div><div><div class="bar" aria-hidden="true"><i style="width:' + pct + '%"></i></div></div></div><ul class="checks">';
     checks.forEach(function (c) {
-      h += "<li><span class=\"" + (c[0] ? "ok" : "no") + '" aria-hidden="true">' + (c[0] ? "✓" : "!") + "</span><span>" + esc(c[1]) + (c[0] ? "" : '<span class="tip">' + esc(c[2]) + "</span>") + "</span></li>";
+      h += '<li><span class="' + (c[0] ? "ok" : "no") + '" aria-hidden="true">' + (c[0] ? "✓" : "!") + "</span><span>" + esc(c[1]) + (c[0] ? "" : '<span class="tip">' + esc(c[2]) + "</span>") + "</span></li>";
     });
-    $("score").innerHTML = h + "</ul>";
+    el.innerHTML = h + "</ul>";
   }
 
   /* ---------- Plain text ---------- */
@@ -500,48 +746,49 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
     var b = state.basics, out = [];
     if (b.name) out.push(b.name.toUpperCase());
     if (b.title) out.push(b.title);
-    var c = [b.email, b.phone, b.location, b.link].filter(Boolean).join(" | ");
+    var c = [b.email, b.phone, b.location, b.link, b.link2].filter(Boolean).join(" | ");
     if (c) out.push(c);
+    var sm = htmlToText(state.summary);
+    if (sm) { out.push(""); out.push("SUMMARY"); out.push(sm); }
     state.order.forEach(function (id) {
+      if (state.hide[id]) return;
       var t = [];
-      if (id === "summary" && String(state.summary).trim()) t.push(state.summary.trim());
       if (id === "experience") state.experience.forEach(function (x) {
-        if (!(x.role || x.company || x.bullets)) return;
-        t.push([x.role, x.company].filter(Boolean).join(", ") + (dates(x.start, x.end) ? " (" + dates(x.start, x.end) + ")" : ""));
-        lines(x.bullets).forEach(function (l) { t.push("- " + l); });
+        if (!(x.role || x.company || !isEmptyHtml(x.desc))) return;
+        var d = dates(x.start, x.current ? "Present" : x.end);
+        t.push([x.role, x.company].filter(Boolean).join(", ") + (d ? " (" + d + ")" : ""));
+        var tx = htmlToText(x.desc); if (tx) t.push(tx);
         t.push("");
       });
       if (id === "education") state.education.forEach(function (x) {
         if (!(x.degree || x.school)) return;
-        t.push([x.degree, x.school].filter(Boolean).join(", ") + (dates(x.start, x.end) ? " (" + dates(x.start, x.end) + ")" : ""));
-        if (x.note) t.push(x.note);
+        var d = dates(x.start, x.end);
+        t.push([x.degree, x.school].filter(Boolean).join(", ") + (d ? " (" + d + ")" : ""));
+        if (x.score) t.push(x.score);
+        var tx = htmlToText(x.desc); if (tx) t.push(tx);
         t.push("");
       });
       if (id === "skills" && skillsArr().length) t.push(skillsArr().join(", "));
       if (id === "projects") state.projects.forEach(function (x) {
-        if (!(x.name || x.desc)) return;
+        if (!(x.name || !isEmptyHtml(x.desc))) return;
         t.push([x.name, x.link].filter(Boolean).join(" - "));
-        if (x.desc) t.push(x.desc);
+        var tx = htmlToText(x.desc); if (tx) t.push(tx);
         t.push("");
       });
-      if (t.length) { out.push(""); out.push(SCHEMA[id].label.toUpperCase()); out = out.concat(t); }
+      if (t.length) { out.push(""); out.push(SEC[id].label.toUpperCase()); out = out.concat(t); }
     });
     return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
   }
   $("copyBtn").addEventListener("click", function () {
     var text = plainText(), box = $("txtbox"), ta = $("txt");
     ta.value = text;
-    function fallback() {
-      box.hidden = false; setView("preview"); ta.focus(); ta.select();
-      toast("Select the text and copy it");
-    }
-    try {
-      navigator.clipboard.writeText(text).then(function () { box.hidden = true; toast("Copied resume text"); }, fallback);
-    } catch (e) { fallback(); }
+    function fallback() { box.hidden = false; setView("preview"); ta.focus(); ta.select(); toast("Select the text and copy it"); }
+    try { navigator.clipboard.writeText(text).then(function () { box.hidden = true; toast("Copied resume text"); }, fallback); }
+    catch (e) { fallback(); }
   });
 
   /* ---------- PDF ---------- */
-  var CAN_PRINT = true;
+  var CAN_PRINT = false;
   $("pdfBtn").addEventListener("click", function () {
     if (!CAN_PRINT) { $("pdfnote").hidden = false; setView("preview"); $("pdfnote").scrollIntoView({ block: "nearest" }); return; }
     setView("preview");
@@ -566,19 +813,6 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
     renderTools(); update();
   });
 
-  /* ---------- Reset buttons (two-click confirm, no dialogs) ---------- */
-  function armed(btn, label, fn) {
-    var timer = null, orig = btn.textContent;
-    btn.addEventListener("click", function () {
-      if (btn.dataset.armed) { clearTimeout(timer); btn.dataset.armed = ""; btn.textContent = orig; fn(); return; }
-      btn.dataset.armed = "1"; btn.textContent = "Click again to replace everything";
-      timer = setTimeout(function () { btn.dataset.armed = ""; btn.textContent = orig; }, 3500);
-    });
-  }
-  function replaceState(src) { state = clone(src); renderEditor(); renderTools(); update(); }
-  armed($("btnSample"), "Load example", function () { replaceState(SAMPLE); toast("Example loaded"); });
-  armed($("btnBlank"), "Start blank", function () { replaceState(BLANK); toast("Blank resume ready"); });
-
   /* ---------- Mobile tabs ---------- */
   function setView(v) {
     var m = $("main"); m.className = v === "edit" ? "show-edit" : "show-preview";
@@ -601,9 +835,8 @@ input:focus, textarea:focus { border-color: var(--accent); outline: none; box-sh
   window.addEventListener("resize", fit);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 
-  renderEditor(); renderTools(); renderPreview();
+  renderNav(); renderPanel(); renderTools(); renderPreview();
 })();
 </script>
 
-</body>
-</html>
+</body></html>
