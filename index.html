@@ -2,161 +2,1270 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Plainleaf Resume Builder</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=Source+Serif+4:wght@400;600;700&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plainleaf — Resume Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap">
 <style>
-/* Layout: slim sticky header; left section menu + one open section form + live A4 preview. Under 1180px the menu becomes a row of tabs; under 900px the panes become Edit / Preview tabs. */
+/* ==========================================================================
+   1. DESIGN TOKENS & THEME SYSTEM
+   ========================================================================== */
 :root {
-  --bg: #f1f4f3;
-  --surface: #ffffff;
-  --fg: #16201d;
-  --muted: #55655f;
-  --line: #d6dedb;
-  --accent: #1f6f5c;
-  --accent-fg: #ffffff;
-  --accent-soft: #e0efea;
-  --good: #1b7a4b;
-  --warn: #9a5b00;
-  --paper: #ffffff;
-  --paper-on: #ffffff;
-  --ink: #1a1d1c;
-  --ink-muted: #57615e;
-  --font-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
-  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  /* Studio Workspace Palette (Light — Warm Paper & Alabaster) */
+  --bg: #F6F5F2;
+  --bg-desk: #ECEAE4;
+  --desk-dot: rgba(24, 28, 26, 0.11);
+  --surface: #FFFFFF;
+  --surface-subtle: #FAF9F7;
+  --surface-hover: #F2F0EC;
+  --fg: #181C1A;
+  --fg-secondary: #3D4541;
+  --muted: #66706B;
+  --line: #E2DFD7;
+  --line-strong: #CFCBC0;
+
+  /* Brand & Status Colors */
+  --accent: #1B6B58;
+  --accent-hover: #145445;
+  --accent-fg: #FFFFFF;
+  --accent-soft: #E5F1EE;
+  --accent-border: rgba(27, 107, 88, 0.28);
+
+  --good: #18794E;
+  --good-soft: #E6F6EE;
+  --warn: #B45309;
+  --warn-soft: #FEF3C7;
+  --danger: #B91C1C;
+  --danger-soft: #FEE2E2;
+
+  /* Resume Paper Tokens (Always crisp white paper) */
+  --paper: #FFFFFF;
+  --paper-on: #FFFFFF;
+  --ink: #1A1D1C;
+  --ink-muted: #57615E;
+
+  /* Typography */
+  --font-ui: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-resume-sans: "Inter", "Instrument Sans", system-ui, sans-serif;
+  --font-resume-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+
+  /* Elevation & Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
+  --shadow-card: 0 1px 2px rgba(24, 28, 26, 0.04), 0 4px 12px rgba(24, 28, 26, 0.03);
+  --shadow-float: 0 4px 16px rgba(24, 28, 26, 0.08), 0 1px 3px rgba(24, 28, 26, 0.06);
+  --shadow-paper:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 24px 48px -12px rgba(0, 0, 0, 0.12);
 }
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e1413; --surface: #161f1d; --fg: #e5eeeb; --muted: #94a69f; --line: #2a3a36;
-    --accent: #4fc3a6; --accent-fg: #08201a; --accent-soft: #1a3a33; --good: #5cd391; --warn: #e3a54a;
+    --bg: #111312;
+    --bg-desk: #0B0D0C;
+    --desk-dot: rgba(235, 240, 237, 0.09);
+    --surface: #191D1B;
+    --surface-subtle: #141716;
+    --surface-hover: #212624;
+    --fg: #ECEFEA;
+    --fg-secondary: #C5CCC8;
+    --muted: #8B9590;
+    --line: #282E2B;
+    --line-strong: #373F3B;
+
+    --accent: #4EC4A7;
+    --accent-hover: #64D4B8;
+    --accent-fg: #081F19;
+    --accent-soft: rgba(78, 196, 167, 0.14);
+    --accent-border: rgba(78, 196, 167, 0.35);
+
+    --good: #4ADE80;
+    --good-soft: rgba(74, 222, 128, 0.14);
+    --warn: #FBBF24;
+    --warn-soft: rgba(251, 191, 36, 0.14);
+    --danger: #F87171;
+    --danger-soft: rgba(248, 113, 113, 0.14);
+
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.2);
+    --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --shadow-paper:
+      0 2px 6px rgba(0, 0, 0, 0.35),
+      0 18px 42px rgba(0, 0, 0, 0.55);
     color-scheme: dark;
   }
 }
+
 :root[data-theme="dark"] {
-  --bg: #0e1413; --surface: #161f1d; --fg: #e5eeeb; --muted: #94a69f; --line: #2a3a36;
-  --accent: #4fc3a6; --accent-fg: #08201a; --accent-soft: #1a3a33; --good: #5cd391; --warn: #e3a54a;
+  --bg: #111312;
+  --bg-desk: #0B0D0C;
+  --desk-dot: rgba(235, 240, 237, 0.09);
+  --surface: #191D1B;
+  --surface-subtle: #141716;
+  --surface-hover: #212624;
+  --fg: #ECEFEA;
+  --fg-secondary: #C5CCC8;
+  --muted: #8B9590;
+  --line: #282E2B;
+  --line-strong: #373F3B;
+
+  --accent: #4EC4A7;
+  --accent-hover: #64D4B8;
+  --accent-fg: #081F19;
+  --accent-soft: rgba(78, 196, 167, 0.14);
+  --accent-border: rgba(78, 196, 167, 0.35);
+
+  --good: #4ADE80;
+  --good-soft: rgba(74, 222, 128, 0.14);
+  --warn: #FBBF24;
+  --warn-soft: rgba(251, 191, 36, 0.14);
+  --danger: #F87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.25), 0 6px 16px rgba(0, 0, 0, 0.2);
+  --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-paper:
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    0 18px 42px rgba(0, 0, 0, 0.55);
   color-scheme: dark;
 }
-* { box-sizing: border-box; }
-body { margin: 0; }
+
+/* ==========================================================================
+   2. RESET & BASE LAYOUT
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html, body { min-width: 0; }
+html, body { min-width: 0; margin: 0; padding: 0; }
+
 body {
-  background: var(--bg); color: var(--fg); font: 14px/1.45 var(--font-ui);
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 0 32px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 14px/1.5 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 10; }
-button { font: inherit; color: inherit; cursor: pointer; }
+
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.top {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--bg);
-  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 0; border-bottom: 1px solid var(--line);
+/* ==========================================================================
+   3. TOP STUDIO HEADER
+   ========================================================================== */
+.studio-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top, 0px);
 }
-.brand { display: flex; align-items: center; gap: 10px; font: 700 20px/1 var(--font-display); letter-spacing: -0.01em; margin-right: auto; }
-.brand svg { width: 22px; height: 22px; }
-.tabs { display: none; gap: 4px; }
-.btn { border: 1px solid var(--line); background: var(--surface); padding: 7px 12px; border-radius: 6px; font-weight: 500; }
-.btn:hover { border-color: var(--accent); }
-.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
-.btn.sm { padding: 5px 9px; font-size: 13px; }
-.btn[aria-pressed="true"], .btn.on { background: var(--accent-soft); border-color: var(--accent); }
-.btn.primary.on { background: var(--accent); }
 
-main { display: grid; grid-template-columns: minmax(340px, 460px) minmax(0, 1fr); gap: 24px; padding-top: 20px; align-items: start; }
+.header-inner {
+  max-width: 1580px;
+  margin: 0 auto;
+  padding: 10px max(16px, env(safe-area-inset-left, 16px));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 700 20px/1 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(27, 107, 88, 0.25);
+  flex-shrink: 0;
+}
+
+.brand-mark svg {
+  width: 16px;
+  height: 16px;
+}
+
+.brand-tag {
+  font: 500 11px/1 var(--font-ui);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 3px 7px;
+  border-radius: var(--radius-pill);
+}
+
+/* Live Auto-save Indicator */
+.save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  padding-left: 4px;
+}
+
+.save-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--good);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.save-status.saving .save-dot {
+  background: var(--warn);
+  transform: scale(1.3);
+}
+
+/* Header Controls */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px 5px 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--fg);
+  transition: all 0.15s ease;
+}
+
+.score-pill:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.score-ring {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--pct, 0) * 1%), var(--line) 0);
+  display: grid;
+  place-items: center;
+}
+
+.score-ring::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--fg);
+  padding: 7px 13px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  background: var(--surface-hover);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.btn.sm {
+  padding: 5px 10px;
+  font-size: 12.5px;
+}
+
+.btn.icon-only {
+  padding: 7px;
+  width: 32px;
+  height: 32px;
+}
+
+.btn[aria-pressed="true"], .btn.on {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.btn.warn {
+  background: var(--warn-soft);
+  border-color: var(--warn);
+  color: var(--warn);
+  font-weight: 600;
+}
+
+/* Mobile Segmented Switcher */
+.mobile-tabs {
+  display: none;
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  gap: 2px;
+}
+
+.mobile-tabs button {
+  border: 0;
+  background: transparent;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.15s ease;
+}
+
+.mobile-tabs button.on {
+  background: var(--surface);
+  color: var(--fg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   4. MAIN WORKSPACE SHELL
+   ========================================================================== */
+.workspace {
+  max-width: 1580px;
+  margin: 0 auto;
+  padding: 20px max(16px, env(safe-area-inset-left, 16px)) 0;
+  display: grid;
+  grid-template-columns: minmax(380px, 500px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
 .pane { min-width: 0; }
 
-/* Section menu */
-.edit-wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-.nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
-.nav button { flex: none; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 8px 12px; font-weight: 500; white-space: nowrap; text-align: left; }
-.nav button:hover { border-color: var(--accent); }
-.nav button[aria-current="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
-.nav .badge { margin-left: auto; font-size: 12px; font-variant-numeric: tabular-nums; opacity: .85; }
-.nav .div { flex: none; width: 1px; background: var(--line); margin: 2px 2px; }
-
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 14px; }
-.card > .hd { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-.card h2 { font: 700 17px/1.2 var(--font-display); text-transform: uppercase; letter-spacing: .05em; margin: 0 auto 0 0; }
-.hd .ctl { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-.note { color: var(--muted); font-size: 12.5px; margin: 0 0 12px; }
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
-.fld { display: flex; flex-direction: column; gap: 4px; min-width: 0; margin-bottom: 12px; }
-.fld.full { grid-column: 1 / -1; }
-.fld label, .lbl { font-size: 12px; color: var(--muted); font-weight: 500; }
-.fld label.chk { display: flex; align-items: center; gap: 8px; color: var(--fg); font-size: 13px; }
-input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); margin: 0; }
-input[type=text], textarea {
-  width: 100%; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+/* Editor Layout: Rail + Active Card */
+.editor-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
 }
-input[type=text]:disabled { opacity: .5; }
-textarea { resize: vertical; min-height: 64px; }
-input:focus, textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px var(--accent-soft); }
-input[aria-invalid="true"] { border-color: var(--warn); }
-.entry { border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 4px; }
-.entry:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
-.entry .eh { display: flex; align-items: center; margin-bottom: 10px; font-weight: 600; font-size: 13px; }
-.entry .eh span { margin-right: auto; }
-.iconbtn { border: 1px solid var(--line); background: var(--surface); min-width: 30px; height: 30px; padding: 0 8px; border-radius: 6px; line-height: 1; display: inline-grid; place-items: center; font-size: 14px; }
-.iconbtn:hover { border-color: var(--accent); }
-.iconbtn:disabled { opacity: .35; cursor: default; }
-.link-danger:hover { border-color: var(--warn); color: var(--warn); }
-.btn.warn { border-color: var(--warn); color: var(--warn); }
 
-/* Rich text box */
-.rte { border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
-.rte:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
-.rte-bar { display: flex; gap: 2px; padding: 5px; border-bottom: 1px solid var(--line); background: var(--surface); border-radius: 6px 6px 0 0; }
-.rte-bar button { width: 34px; height: 30px; border: 1px solid transparent; background: transparent; border-radius: 5px; font-size: 14px; display: inline-grid; place-items: center; padding: 0; }
-.rte-bar button:hover { border-color: var(--line); background: var(--bg); }
-.rte-bar svg { width: 16px; height: 16px; }
-.rte-link { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; border-bottom: 1px solid var(--line); background: var(--surface); }
-.rte-link input { flex: 1 1 170px; min-width: 0; }
-.rte-body { min-height: 92px; padding: 8px 10px; outline: none; overflow-wrap: anywhere; position: relative; }
-.rte-body.is-empty::before { content: attr(data-ph); color: var(--muted); position: absolute; pointer-events: none; }
-.rte-body ul, .rte-body ol { margin: 4px 0; padding-left: 22px; }
+/* Section Navigation Rail */
+.section-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.section-nav::-webkit-scrollbar { display: none; }
+
+.nav-item {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--fg-secondary);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.nav-item svg {
+  width: 15px;
+  height: 15px;
+  opacity: 0.75;
+  flex-shrink: 0;
+}
+
+.nav-item:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-hover);
+  color: var(--fg);
+}
+
+.nav-item[aria-current="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent-border);
+  font-weight: 600;
+}
+
+.nav-item[aria-current="true"] svg {
+  opacity: 1;
+}
+
+.nav-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+
+.nav-item[aria-current="true"] .nav-badge {
+  background: var(--surface);
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.nav-item.nav-create {
+  border-style: dashed;
+  border-color: var(--line-strong);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-item.nav-create:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.nav-divider {
+  flex: none;
+  width: 1px;
+  background: var(--line);
+  margin: 4px 2px;
+}
+
+/* Custom Section Creator Presets & Format Cards */
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.preset-chip {
+  border: 1px solid var(--line);
+  background: var(--surface-subtle);
+  color: var(--fg-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  transition: all 0.15s ease;
+}
+
+.preset-chip:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.format-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.format-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-subtle);
+  transition: all 0.15s ease;
+}
+
+.format-opt:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-hover);
+}
+
+.format-opt[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.format-opt strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.format-opt[aria-pressed="true"] strong {
+  color: var(--accent);
+}
+
+.format-opt span {
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   5. EDITOR CARDS & FORM CONTROLS
+   ========================================================================== */
+.editor-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  margin-bottom: 16px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.card-title-group svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+
+.card-header h2 {
+  font: 700 16px/1.2 var(--font-ui);
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--fg);
+}
+
+.card-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.helper-note {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 14px;
+  line-height: 1.45;
+}
+
+/* Form Grid & Inputs */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  margin-bottom: 14px;
+}
+
+.field.full { grid-column: 1 / -1; }
+
+.field label, .field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg-secondary);
+  letter-spacing: 0.01em;
+}
+
+.field label.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  margin: 0;
+  border-radius: 4px;
+}
+
+input[type="text"], textarea {
+  width: 100%;
+  font: 400 13.5px/1.45 var(--font-ui);
+  color: var(--fg);
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 8px 11px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+input[type="text"]:hover:not(:disabled), textarea:hover:not(:disabled) {
+  border-color: var(--line-strong);
+}
+
+input[type="text"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--bg);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 76px;
+}
+
+input:focus, textarea:focus {
+  background: var(--surface);
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+/* Entry Sub-Cards (Experience, Education, Projects) */
+.entry-card {
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px 14px 4px;
+  margin-bottom: 12px;
+  transition: border-color 0.15s ease;
+}
+
+.entry-card:hover {
+  border-color: var(--line-strong);
+}
+
+.entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.entry-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  min-width: 0;
+}
+
+.entry-num {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.entry-subtitle {
+  color: var(--muted);
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--fg-secondary);
+  min-width: 28px;
+  height: 28px;
+  padding: 0 7px;
+  border-radius: var(--radius-sm);
+  display: inline-grid;
+  place-items: center;
+  transition: all 0.15s ease;
+}
+
+.icon-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.icon-btn:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  background: var(--surface-hover);
+  color: var(--fg);
+}
+
+.icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.icon-btn.danger:hover {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.add-entry-btn {
+  width: 100%;
+  border-style: dashed;
+  border-color: var(--line-strong);
+  background: var(--surface-subtle);
+  color: var(--accent);
+  font-weight: 600;
+  padding: 9px 14px;
+}
+
+.add-entry-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* Skills Live Chip Preview */
+.skill-preview-wrap {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.skill-preview-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.skill-preview-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+/* ==========================================================================
+   6. RICH TEXT EDITOR (.rte)
+   ========================================================================== */
+.rte {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-subtle);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.rte:hover {
+  border-color: var(--line-strong);
+}
+
+.rte:focus-within {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.rte-bar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 6px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.rte-bar button {
+  width: 30px;
+  height: 28px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--fg-secondary);
+  border-radius: 4px;
+  font-size: 13px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.rte-bar button:hover {
+  background: var(--surface-hover);
+  color: var(--fg);
+}
+
+.rte-bar button.is-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.rte-bar svg {
+  width: 15px;
+  height: 15px;
+}
+
+.rte-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--line);
+  margin: 0 3px;
+}
+
+.rte-link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-subtle);
+}
+
+.rte-link input {
+  flex: 1 1 170px;
+  min-width: 0;
+  padding: 5px 9px;
+  font-size: 12.5px;
+}
+
+.rte-body {
+  min-height: 96px;
+  padding: 9px 11px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  outline: none;
+  overflow-wrap: anywhere;
+  position: relative;
+}
+
+.rte-body.is-empty::before {
+  content: attr(data-ph);
+  color: var(--muted);
+  position: absolute;
+  pointer-events: none;
+}
+
+.rte-body ul, .rte-body ol { margin: 4px 0; padding-left: 20px; }
+.rte-body li { margin-bottom: 2px; }
 .rte-body p { margin: 0 0 4px; }
 .rte-body li p { margin: 0; }
 .rte-body a { color: var(--accent); text-decoration: underline; }
 
-.score { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; }
-.score .num { font: 700 34px/1 var(--font-display); font-variant-numeric: tabular-nums; }
-.score .num small { font-size: 14px; color: var(--muted); font-weight: 500; }
-.bar { height: 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
-.bar i { display: block; height: 100%; background: var(--accent); }
-.checks { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; }
-.checks li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; font-size: 13px; }
-.checks .ok { color: var(--good); font-weight: 700; }
-.checks .no { color: var(--warn); font-weight: 700; }
-.checks .tip { color: var(--muted); display: block; font-size: 12px; }
+/* ==========================================================================
+   7. RESUME QUALITY CHECK PANEL
+   ========================================================================== */
+.score-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
 
-.tools { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 12px; }
-.tools .grp { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-.tools .lab { font-size: 12px; color: var(--muted); margin-right: 4px; }
-.sw { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--line); padding: 0; }
-.sw[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
-.pageinfo { margin-left: auto; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.stage { width: 100%; overflow: hidden; position: relative; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
-.stage .paper { box-shadow: 0 1px 6px rgba(0, 0, 0, .18); }
-#txtbox { margin-bottom: 12px; }
-#toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: 6px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 20; }
-#toast.show { opacity: 1; }
+.score-num {
+  font: 700 32px/1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
 
-/* ---- Resume paper (A4 at 794 x 1123 px, scaled to fit) ---- */
-.paper { --ra: #1f6f5c; width: 794px; min-height: 1123px; background: var(--paper); color: var(--ink); font-size: 13.5px; line-height: 1.5; transform-origin: 0 0; position: relative; }
-.paper.f-sans { font-family: var(--font-ui); }
-.paper.f-serif { font-family: var(--font-serif); }
+.score-num small {
+  font: 500 14px/1 var(--font-ui);
+  color: var(--muted);
+}
+
+.score-meter-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.score-meter-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg-secondary);
+  margin-bottom: 6px;
+}
+
+.bar {
+  height: 8px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-pill);
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.checks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.checks li {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.check-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 1px;
+}
+
+.check-icon.ok {
+  background: var(--good-soft);
+  color: var(--good);
+}
+
+.check-icon.no {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.checks .tip {
+  color: var(--muted);
+  display: block;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   8. INTERACTIVE PREVIEW DESK & STUDIO TOOLBAR
+   ========================================================================== */
+.preview-column {
+  position: sticky;
+  top: 68px;
+}
+
+.studio-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 9px 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-card);
+}
+
+.tool-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tool-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-right: 2px;
+}
+
+/* Segmented Control Pills */
+.seg-group {
+  display: inline-flex;
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.seg-btn {
+  border: 0;
+  background: transparent;
+  color: var(--fg-secondary);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.seg-btn:hover {
+  color: var(--fg);
+}
+
+.seg-btn[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--fg);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Tactile Color Swatches */
+.swatches {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sw {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  padding: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sw:hover {
+  transform: scale(1.12);
+}
+
+.sw[aria-pressed="true"] {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 2px var(--fg);
+}
+
+.page-meta {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-subtle);
+  border: 1px solid var(--line);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Drafting Desk Backdrop */
+.desk-stage {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-desk);
+  background-image: radial-gradient(var(--desk-dot) 1.25px, transparent 1.25px);
+  background-size: 18px 18px;
+  padding: 24px 16px;
+  transition: height 0.15s ease;
+}
+
+.desk-stage .paper {
+  box-shadow: var(--shadow-paper);
+}
+
+/* Callout & Plain Text Box */
+.callout-box {
+  margin-bottom: 14px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.callout-box p { margin: 0 0 4px; }
+.callout-box p:last-child { margin-bottom: 0; }
+
+#txtbox {
+  margin-bottom: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+
+/* Toast Notification */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%) translateY(8px);
+  background: var(--fg);
+  color: var(--bg);
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-float);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 50;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ==========================================================================
+   9. A4 RESUME PAPER & TEMPLATES (794 x 1123 px)
+   ========================================================================== */
+.paper {
+  --ra: #1f6f5c;
+  width: 794px;
+  min-height: 1123px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.5;
+  transform-origin: 0 0;
+  position: relative;
+}
+
+.paper.f-sans { font-family: var(--font-resume-sans); }
+.paper.f-serif { font-family: var(--font-resume-serif); }
+
 .paper .inner { padding: 54px 60px; }
-.paper h1 { font-size: 36px; line-height: 1.1; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+.paper h1 { font-size: 36px; line-height: 1.12; margin: 0; font-weight: 700; letter-spacing: -0.015em; }
 .paper .ttl { color: var(--ra); font-size: 16px; margin-top: 5px; font-weight: 500; }
 .paper .contact { display: flex; flex-wrap: wrap; gap: 3px 16px; margin-top: 10px; color: var(--ink-muted); font-size: 12.5px; }
-.paper h3 { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ra); margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 1.5px solid var(--ra); font-weight: 700; }
+.paper h3 {
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ra);
+  margin: 22px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1.5px solid var(--ra);
+  font-weight: 700;
+}
 .paper p { margin: 0 0 6px; }
 .paper ul, .paper ol { margin: 4px 0 0; padding-left: 18px; }
-.paper li { margin-bottom: 2px; }
+.paper li { margin-bottom: 2.5px; }
 .paper li p { margin: 0; }
 .paper .rich p { margin: 0 0 4px; }
 .paper .ent { margin-bottom: 12px; }
@@ -165,21 +1274,29 @@ input[aria-invalid="true"] { border-color: var(--warn); }
 .paper .dt { color: var(--ink-muted); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .paper .sub { color: var(--ink-muted); font-style: italic; }
 .paper .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.paper .chip { border: 1px solid var(--ra); color: var(--ink); padding: 1px 9px; border-radius: 3px; font-size: 12.5px; }
+.paper .chip { border: 1px solid var(--ra); color: var(--ink); padding: 1.5px 9px; border-radius: 3px; font-size: 12.5px; }
 .paper .lnk { color: var(--ra); font-size: 12.5px; }
-.paper .empty { color: var(--ink-muted); }
+.paper .empty { color: var(--ink-muted); opacity: 0.55; }
 .paper a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 .paper .lnk a, .paper .rich a { color: var(--ra); }
-/* Classic */
+
+/* Template 1: Classic */
 .t-classic header { text-align: center; }
 .t-classic .contact { justify-content: center; }
 .t-classic h3 { color: var(--ink); border-bottom: 1px solid var(--ink); }
-/* Modern */
+
+/* Template 2: Modern */
 .t-modern .inner { padding-top: 0; }
-.t-modern header { margin: 0 -60px; padding: 46px 60px 28px; background: var(--ra); color: var(--paper-on); }
-.t-modern header .ttl, .t-modern header .contact { color: var(--paper-on); opacity: .88; }
-.t-modern header .empty { color: var(--paper-on); opacity: .6; }
-/* Sidebar */
+.t-modern header {
+  margin: 0 -60px;
+  padding: 46px 60px 28px;
+  background: var(--ra);
+  color: var(--paper-on);
+}
+.t-modern header .ttl, .t-modern header .contact { color: var(--paper-on); opacity: 0.9; }
+.t-modern header .empty { color: var(--paper-on); opacity: 0.6; }
+
+/* Template 3: Sidebar */
 .t-sidebar .wrap2 { display: grid; grid-template-columns: 236px 1fr; min-height: 1123px; }
 .t-sidebar .side { background: color-mix(in srgb, var(--ra) 11%, var(--paper)); padding: 54px 26px; }
 .t-sidebar .main { padding: 54px 44px 54px 40px; }
@@ -188,97 +1305,246 @@ input[aria-invalid="true"] { border-color: var(--warn); }
 .t-sidebar .side .chips { flex-direction: column; gap: 4px; }
 .t-sidebar .side .chip { border: 0; padding: 0; }
 .t-sidebar .main h1 { font-size: 32px; }
-.pbreak { position: absolute; left: 0; right: 0; border-top: 1px dashed #c0392b; font-size: 11px; color: #c0392b; text-align: right; padding-right: 10px; }
 
-.pdfnote { margin-bottom: 12px; border: 1px solid var(--line); background: var(--accent-soft); border-radius: 6px; padding: 10px 12px; font-size: 13px; }
-.pdfnote p { margin: 0 0 4px; }
+/* Page break guide line on screen */
+.pbreak {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1.5px dashed #DC2626;
+  font-size: 11px;
+  font-weight: 600;
+  color: #DC2626;
+  background: rgba(220, 38, 38, 0.06);
+  text-align: right;
+  padding: 2px 10px;
+  pointer-events: none;
+}
 
+/* ==========================================================================
+   10. PRINT STYLES (EXACT A4 OUTPUT)
+   ========================================================================== */
 @media print {
   @page { size: A4; margin: 0; }
-  html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; height: auto !important; }
+  html, body {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+  }
   .paper { width: 100% !important; }
   .paper, .t-sidebar .wrap2 { min-height: 1122px !important; }
   .t-sidebar .wrap2 { grid-template-columns: 236px 1fr !important; }
-  body::before, .top, #editPane, .tools, #txtbox, #pdfnote, #toast, .pbreak { display: none !important; }
-  main { display: block !important; padding: 0 !important; }
-  #previewPane { display: block !important; }
-  .stage { height: auto !important; border: 0 !important; overflow: visible !important; }
-  .paper { transform: none !important; margin-left: 0 !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .studio-header, #editPane, .studio-toolbar, #txtbox, #pdfnote, #toast, .pbreak {
+    display: none !important;
+  }
+  .workspace {
+    display: block !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  #previewPane {
+    display: block !important;
+    position: static !important;
+  }
+  .desk-stage {
+    height: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    overflow: visible !important;
+  }
+  .paper {
+    transform: none !important;
+    margin-left: 0 !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   .paper .ent, .paper li { break-inside: avoid; }
 }
 
+/* ==========================================================================
+   11. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
 @media (min-width: 1180px) {
-  main { grid-template-columns: minmax(540px, 620px) minmax(0, 1fr); }
-  .edit-wrap { grid-template-columns: 176px minmax(0, 1fr); align-items: start; }
-  .nav { flex-direction: column; overflow: visible; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px); padding-bottom: 0; }
-  .nav button { width: 100%; }
-  .nav .div { width: auto; height: 1px; margin: 2px 0; }
+  .workspace {
+    grid-template-columns: minmax(560px, 650px) minmax(0, 1fr);
+  }
+  .editor-shell {
+    grid-template-columns: 192px minmax(0, 1fr);
+    align-items: start;
+  }
+  .section-nav {
+    flex-direction: column;
+    overflow: visible;
+    position: sticky;
+    top: 68px;
+    padding-bottom: 0;
+  }
+  .nav-item { width: 100%; }
+  .nav-divider { width: auto; height: 1px; margin: 4px 0; }
 }
-@media (max-width: 899px) {
-  .tabs { display: flex; }
-  main { grid-template-columns: minmax(0, 1fr); }
-  main.show-edit #previewPane, main.show-preview #editPane { display: none; }
-  .grid2 { grid-template-columns: 1fr; }
-}
-@media (prefers-reduced-motion: reduce) { #toast { transition: none; } }
-</style>
 
+@media (max-width: 899px) {
+  .mobile-tabs { display: flex; }
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .workspace.show-edit #previewPane,
+  .workspace.show-preview #editPane { display: none; }
+  .preview-column { position: static; }
+  .form-grid, .format-grid { grid-template-columns: 1fr; }
+  .brand-tag, .save-status { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+</style>
 </head>
 <body>
-<div class="top">
-  <div class="brand">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="2" width="18" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 7h10M7 11h10M7 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    Plainleaf
-  </div>
-  <div class="tabs" role="tablist" aria-label="View">
-    <button class="btn sm on" id="tabEdit" type="button">Edit</button>
-    <button class="btn sm" id="tabPreview" type="button">Preview</button>
-  </div>
-  <button class="btn" id="copyBtn" type="button">Copy as text</button>
-  <button class="btn primary" id="pdfBtn" type="button">Download PDF</button>
-</div>
 
-<main class="show-edit" id="main">
+<!-- Top Studio Bar -->
+<header class="studio-header">
+  <div class="header-inner">
+    <div class="brand-wrap">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+        </span>
+        Plainleaf
+      </div>
+      <span class="brand-tag">Resume Builder</span>
+      <span class="save-status" id="saveStatus" aria-live="polite">
+        <span class="save-dot"></span>
+        <span id="saveLabel">Saved locally</span>
+      </span>
+    </div>
+
+    <div class="mobile-tabs" role="tablist" aria-label="Workspace view">
+      <button type="button" class="on" id="tabEdit">Editor</button>
+      <button type="button" id="tabPreview">Preview</button>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="score-pill" id="headerScoreBtn" title="View Resume Quality Check">
+        <span class="score-ring" id="headerScoreRing" style="--pct:0"></span>
+        <span>Score: <strong id="headerScoreText">0%</strong></span>
+      </button>
+
+      <button type="button" class="btn icon-only" id="themeBtn" title="Toggle light or dark theme" aria-label="Toggle light or dark theme">
+        <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden>
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+        </svg>
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      </button>
+
+      <button type="button" class="btn" id="copyBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        Copy text
+      </button>
+
+      <button type="button" class="btn primary" id="pdfBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download PDF
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Split Workspace -->
+<main class="workspace show-edit" id="main">
+  <!-- Left Column: Section Rail + Active Section Form -->
   <section class="pane" id="editPane" aria-label="Resume editor">
-    <div class="edit-wrap">
-      <nav class="nav" id="nav" aria-label="Resume sections"></nav>
+    <div class="editor-shell">
+      <nav class="section-nav" id="nav" aria-label="Resume sections"></nav>
       <div id="editor"></div>
     </div>
   </section>
 
-  <section class="pane" id="previewPane" aria-label="Live preview">
-    <div class="tools">
-      <div class="grp" id="tplGrp"><span class="lab">Layout</span></div>
-      <div class="grp" id="colGrp"><span class="lab">Color</span></div>
-      <div class="grp" id="fontGrp"><span class="lab">Font</span></div>
-      <span class="pageinfo" id="pageinfo"></span>
+  <!-- Right Column: Studio Controls + Drafting Desk + Live A4 Paper -->
+  <section class="pane preview-column" id="previewPane" aria-label="Live A4 resume preview">
+    <div class="studio-toolbar">
+      <div class="tool-group" id="tplGrp">
+        <span class="tool-label">Layout</span>
+      </div>
+      <div class="tool-group" id="colGrp">
+        <span class="tool-label">Accent</span>
+      </div>
+      <div class="tool-group" id="fontGrp">
+        <span class="tool-label">Type</span>
+      </div>
+      <span class="page-meta" id="pageinfo">1 page · A4</span>
     </div>
-    <div class="pdfnote" id="pdfnote" hidden>
-      <p><b>Saving a PDF needs the standalone file.</b></p>
-      <p>Claude blocks printing and downloads inside this page. Open the standalone Plainleaf file in your browser, press Download PDF, and choose "Save as PDF" as the destination. Email, phone and website links stay clickable in the saved PDF.</p>
+
+    <div class="callout-box" id="pdfnote" hidden>
+      <p><strong>Saving a PDF requires opening the standalone HTML file.</strong></p>
+      <p>Embedded preview frames block browser print dialogs. Open this Plainleaf file directly in a browser tab, click <strong>Download PDF</strong>, and select <em>Save as PDF</em>—all email, phone, and website links remain clickable.</p>
     </div>
+
     <div id="txtbox" hidden>
-      <p class="note">Your browser blocked automatic copying. Select the text below and copy it.</p>
+      <p class="helper-note">Automatic clipboard access was blocked by your browser. Select and copy the plain-text resume below:</p>
       <textarea id="txt" readonly rows="10"></textarea>
     </div>
-    <div class="stage" id="stage"><div class="paper" id="paper"></div></div>
+
+    <div class="desk-stage" id="stage">
+      <div class="paper" id="paper"></div>
+    </div>
   </section>
 </main>
+
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function () {
-  var KEY = "plainleaf.v2", OLDKEY = "plainleaf.v1";
+  var KEY = "plainleaf.v2", OLDKEY = "plainleaf.v1", THEME_KEY = "plainleaf.theme";
   var PAGE_H = 1123;
   var $ = function (id) { return document.getElementById(id); };
   var editor = $("editor"), nav = $("nav"), paper = $("paper"), stage = $("stage");
 
-  /* ---------- Helpers ---------- */
+  /* ---------- Theme Management ---------- */
+  function applyTheme(t) {
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    else document.documentElement.removeAttribute("data-theme");
+    var isDark = t === "dark" || (!t && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    $("themeIconSun").hidden = !isDark;
+    $("themeIconMoon").hidden = isDark;
+  }
+  var savedTheme = null;
+  try { savedTheme = localStorage.getItem(THEME_KEY); } catch (e) {}
+  applyTheme(savedTheme);
+  $("themeBtn").addEventListener("click", function () {
+    var currentDark = document.documentElement.getAttribute("data-theme") === "dark" ||
+      (!document.documentElement.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    var next = currentDark ? "light" : "dark";
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    applyTheme(next);
+  });
+
+  /* ---------- Helpers & Sanitization ---------- */
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
-  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
   function lines(s) { return String(s || "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean); }
   function dates(a, b) { return [a, b].filter(function (x) { return x && String(x).trim(); }).join(" – "); }
-  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 2200); }
+  function toast(msg) {
+    var t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove("show"); }, 2300);
+  }
 
   function safeHref(v) {
     v = String(v || "").trim();
@@ -288,6 +1554,7 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     if (/^[a-z][a-z0-9+.-]*:/i.test(v)) return "";
     return "https://" + v;
   }
+
   function cleanNode(node) {
     var out = "";
     node.childNodes.forEach(function (n) {
@@ -311,10 +1578,12 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     });
     return out;
   }
+
   function sanitize(html) {
     var doc = new DOMParser().parseFromString("<body>" + String(html || ""), "text/html");
     return cleanNode(doc.body);
   }
+
   function htmlToText(html) {
     var doc = new DOMParser().parseFromString("<body>" + sanitize(html), "text/html"), out = "";
     function nl() { if (out && !/\n$/.test(out)) out += "\n"; }
@@ -332,68 +1601,138 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     })(doc.body);
     return out.replace(/\n{3,}/g, "\n\n").trim();
   }
+
   function isEmptyHtml(h) { return htmlToText(h).replace(/^-\s*$/gm, "").trim() === ""; }
   function textLines(h) { return htmlToText(h).split("\n").map(function (s) { return s.replace(/^-\s*/, "").trim(); }).filter(Boolean); }
   function p(t) { return t ? "<p>" + esc(t).replace(/\n/g, "<br>") + "</p>" : ""; }
   function ul(arr) { return arr.length ? "<ul>" + arr.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : ""; }
 
-  /* ---------- Data ---------- */
+  /* ---------- Inline SVG Icons ---------- */
+  var ICONS = {
+    basics: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    experience: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    education: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
+    skills: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+    projects: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
+    custom: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+    up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>',
+    down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+  };
+
+  /* ---------- Schema & Sample Data ---------- */
   var SEC = {
-    education: { label: "Education", item: "Course", fields: [
-      { k: "degree", l: "Degree or course" }, { k: "school", l: "School or college" },
-      { k: "start", l: "Start", ph: "Aug 2021", half: 1 }, { k: "end", l: "End", ph: "Jul 2025", half: 1 },
+    education: { label: "Education", item: "Course", titleKey: "degree", subKey: "school", fields: [
+      { k: "degree", l: "Degree or course", ph: "B.Sc. Statistics" },
+      { k: "school", l: "School or college", ph: "Holkar Science College" },
+      { k: "start", l: "Start", ph: "Aug 2021", half: 1 },
+      { k: "end", l: "End", ph: "Jul 2025", half: 1 },
       { k: "score", l: "GPA or percentage", ph: "CGPA 8.1 or 82%" },
       { k: "desc", l: "Description (optional)", t: "rich", ph: "Subjects, awards or your final-year project." }
     ] },
-    experience: { label: "Work Experience", item: "Role", fields: [
-      { k: "role", l: "Job title" }, { k: "company", l: "Company" },
-      { k: "start", l: "Start", ph: "Jun 2024", half: 1 }, { k: "end", l: "End", ph: "Dec 2025", half: 1 },
+    experience: { label: "Work Experience", item: "Role", titleKey: "role", subKey: "company", fields: [
+      { k: "role", l: "Job title", ph: "Data Analyst" },
+      { k: "company", l: "Company", ph: "Brightwell Logistics" },
+      { k: "start", l: "Start", ph: "Jun 2024", half: 1 },
+      { k: "end", l: "End", ph: "Dec 2025", half: 1 },
       { k: "current", l: "Currently working here", t: "check" },
-      { k: "desc", l: "Description", t: "rich", ph: "Use bullets. Start with a verb and add a number where you can." }
+      { k: "desc", l: "Description & achievements", t: "rich", ph: "Use bullets. Start with an action verb and include measurable numbers." }
     ] },
     skills: { label: "Skills" },
-    projects: { label: "Projects", item: "Project", fields: [
-      { k: "name", l: "Project name" }, { k: "link", l: "Link (optional)" },
-      { k: "desc", l: "Description", t: "rich", ph: "What it does and which tools you used." }
+    projects: { label: "Projects", item: "Project", titleKey: "name", subKey: "link", fields: [
+      { k: "name", l: "Project name", ph: "City Rainfall Explorer" },
+      { k: "link", l: "Link (optional)", ph: "github.com/username/project" },
+      { k: "desc", l: "Description", t: "rich", ph: "What it does, impact achieved, and which tools you used." }
     ] }
   };
-  var BASICS = [
-    { k: "name", l: "Name" }, { k: "title", l: "Job title" }, { k: "summary", l: "Summary", t: "rich", ph: "Two or three sentences on what you do, what you are good at and what you want next." },
-    { k: "email", l: "Email", half: 1 }, { k: "phone", l: "Phone", half: 1 },
-    { k: "link", l: "Website 1" }, { k: "link2", l: "Website 2", ph: "github.com/your-name", half: 1 }, { k: "location", l: "Location", half: 1 }
+
+  var CUSTOM_ENTRY_FIELDS = [
+    { k: "title", l: "Title / Role / Credential", ph: "AWS Certified Solutions Architect" },
+    { k: "sub", l: "Organization / Issuer (optional)", ph: "Amazon Web Services", half: 1 },
+    { k: "date", l: "Date or Year (optional)", ph: "2025", half: 1 },
+    { k: "link", l: "Link or Credential ID (optional)", ph: "credly.com/badges/..." },
+    { k: "desc", l: "Details (optional)", t: "rich", ph: "Key details, honors, or bullet points." }
   ];
-  var NAV = [["basics", "Personal Details"], ["education", "Education"], ["experience", "Work Experience"], ["skills", "Skills"], ["projects", "Projects"], ["check", "Resume check"]];
-  var ORDERABLE = { education: 1, experience: 1, skills: 1, projects: 1 };
+
+  var CUSTOM_PRESETS = [
+    { label: "Certifications", type: "entries" },
+    { label: "Awards & Honors", type: "entries" },
+    { label: "Volunteering", type: "entries" },
+    { label: "Publications", type: "entries" },
+    { label: "Languages", type: "chips" },
+    { label: "Career Highlights", type: "rich" }
+  ];
+
+  var BASICS = [
+    { k: "name", l: "Full name", ph: "Alex Morgan" },
+    { k: "title", l: "Headline / Job title", ph: "Product Designer" },
+    { k: "summary", l: "Professional summary", t: "rich", ph: "Two or three crisp sentences on what you do, your core strengths, and what you are aiming for next." },
+    { k: "email", l: "Email", ph: "you@example.com", half: 1 },
+    { k: "phone", l: "Phone", ph: "+1 (555) 234-5678", half: 1 },
+    { k: "link", l: "Website or LinkedIn", ph: "linkedin.com/in/your-name" },
+    { k: "link2", l: "Portfolio or GitHub", ph: "github.com/your-name", half: 1 },
+    { k: "location", l: "Location", ph: "New York, NY", half: 1 }
+  ];
+
+  var BUILTIN_ORDER = { education: 1, experience: 1, skills: 1, projects: 1 };
   var TEMPLATES = [["classic", "Classic"], ["modern", "Modern"], ["sidebar", "Sidebar"]];
-  var COLORS = [["#1f6f5c", "Teal"], ["#3a4db7", "Indigo"], ["#b3322e", "Crimson"], ["#334155", "Slate"], ["#9a5b00", "Amber"]];
+  var COLORS = [["#1f6f5c", "Teal"], ["#3a4db7", "Indigo"], ["#b3322e", "Crimson"], ["#334155", "Slate"], ["#6d28d9", "Plum"], ["#9a5b00", "Amber"]];
   var FONTS = [["sans", "Sans"], ["serif", "Serif"]];
 
-  function blankItem(id) { var o = {}; SEC[id].fields.forEach(function (f) { o[f.k] = f.t === "check" ? false : ""; }); return o; }
+  var createDraft = { label: "", type: "entries" };
+
+  function isCustomId(id) { return typeof id === "string" && id.indexOf("custom_") === 0; }
+  function isSectionId(id) { return !!(BUILTIN_ORDER[id] || (state && state.customSections && state.customSections[id])); }
+  function sectionLabel(id) {
+    if (id === "basics") return "Personal Details";
+    if (SEC[id]) return SEC[id].label;
+    if (state.customSections && state.customSections[id]) return state.customSections[id].label || "Untitled Section";
+    return id;
+  }
+
+  function blankCustomEntry() {
+    return { title: "", sub: "", date: "", link: "", desc: "" };
+  }
+
+  function blankItem(id) {
+    if (isCustomId(id)) return blankCustomEntry();
+    var o = {};
+    SEC[id].fields.forEach(function (f) { o[f.k] = f.t === "check" ? false : ""; });
+    return o;
+  }
+
   function makeBlank() {
     return {
       template: "classic", accent: "#1f6f5c", font: "sans", active: "basics", hide: {},
       order: ["experience", "education", "skills", "projects"],
+      customSections: {},
       basics: { name: "", title: "", email: "", phone: "", location: "", link: "", link2: "" },
       summary: "", experience: [blankItem("experience")], education: [blankItem("education")], skills: "", projects: []
     };
   }
+
   var SAMPLE = {
     template: "classic", accent: "#1f6f5c", font: "sans", active: "basics", hide: {},
     order: ["experience", "education", "skills", "projects"],
-    basics: { name: "Riya Sharma", title: "Junior Data Analyst", email: "riya.sharma@example.com", phone: "+91 98765 43210", location: "Indore, India", link: "linkedin.com/in/riya-sharma", link2: "github.com/example" },
+    customSections: {},
+    basics: { name: "Alex Morgan", title: "Junior Data Analyst", email: "alex.morgan@example.com", phone: "+1 (555) 234-5678", location: "Austin, TX", link: "linkedin.com/in/alex-morgan", link2: "github.com/example" },
     summary: "<p>Data analyst with two years of experience turning messy sales and operations data into weekly reports that managers act on. Comfortable with <b>SQL</b>, <b>Python</b> and <b>Power BI</b>, and keen to move into forecasting work.</p>",
     experience: [
       { role: "Data Analyst Intern", company: "Brightwell Logistics", start: "Jan 2025", end: "", current: true,
         desc: ul(["Built a Power BI dashboard tracking 12 delivery KPIs, replacing a manual report that took 6 hours each week", "Cleaned and merged 400,000+ shipment records with Python and pandas, cutting data errors by 35%", "Presented route delay findings to the operations head, which led to two depots changing their dispatch times"]) },
-      { role: "Operations Associate", company: "Kiran Retail", start: "Jun 2023", end: "Dec 2024", current: false,
+      { role: "Operations Associate", company: "Northstar Retail", start: "Jun 2023", end: "Dec 2024", current: false,
         desc: ul(["Maintained stock sheets for 8 stores and flagged slow movers each month", "Trained 5 new staff on the inventory tool, shortening onboarding from 2 weeks to 1"]) }
     ],
     education: [
-      { degree: "B.Sc. Statistics", school: "Holkar Science College, Indore", start: "2020", end: "2023", score: "CGPA 8.1", desc: "<p>First class with distinction. Final-year project on demand forecasting for local retail.</p>" }
+      { degree: "B.Sc. Statistics", school: "State University", start: "2020", end: "2023", score: "GPA 3.8 / 4.0", desc: "<p>Graduated with honors. Final-year project on demand forecasting for local retail.</p>" }
     ],
     skills: "SQL, Python, pandas, Power BI, Excel, Data cleaning, Dashboards, Statistics",
     projects: [
-      { name: "City Rainfall Explorer", link: "github.com/example/rainfall", desc: "<p>Interactive charts of 30 years of monthly rainfall for Madhya Pradesh districts, built with <i>Python</i> and Plotly.</p>" }
+      { name: "Regional Rainfall Explorer", link: "github.com/example/rainfall", desc: "<p>Interactive charts of 30 years of monthly rainfall across regional districts, built with <i>Python</i> and Plotly.</p>" }
     ]
   };
 
@@ -407,18 +1746,32 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     s.projects = (o.projects || []).map(function (x) { return { name: x.name || "", link: x.link || "", desc: p(x.desc || "") }; });
     return s;
   }
+
   function normalize(s) {
     var b = makeBlank();
     s.hide = s.hide || {};
-    s.active = NAV.some(function (n) { return n[0] === s.active; }) ? s.active : "basics";
+    s.customSections = (s.customSections && typeof s.customSections === "object") ? s.customSections : {};
+    Object.keys(s.customSections).forEach(function (cid) {
+      var cs = s.customSections[cid];
+      if (!cs || typeof cs !== "object") { delete s.customSections[cid]; return; }
+      cs.label = String(cs.label || "Custom Section");
+      cs.type = (cs.type === "chips" || cs.type === "rich") ? cs.type : "entries";
+      if (!Array.isArray(cs.items)) cs.items = [blankCustomEntry()];
+      cs.chips = String(cs.chips || "");
+      cs.rich = String(cs.rich || "");
+    });
+    var validActive = s.active === "basics" || s.active === "check" || s.active === "create" || BUILTIN_ORDER[s.active] || s.customSections[s.active];
+    s.active = validActive ? s.active : "basics";
     s.basics = Object.assign(b.basics, s.basics || {});
-    var order = (s.order || []).filter(function (i) { return ORDERABLE[i]; });
-    Object.keys(ORDERABLE).forEach(function (i) { if (order.indexOf(i) < 0) order.push(i); });
+    var order = (s.order || []).filter(function (i) { return BUILTIN_ORDER[i] || s.customSections[i]; });
+    Object.keys(BUILTIN_ORDER).forEach(function (i) { if (order.indexOf(i) < 0) order.push(i); });
+    Object.keys(s.customSections).forEach(function (i) { if (order.indexOf(i) < 0) order.push(i); });
     s.order = order;
     ["experience", "education", "projects"].forEach(function (k) { if (!Array.isArray(s[k])) s[k] = b[k]; });
     s.summary = s.summary || ""; s.skills = s.skills || "";
     return s;
   }
+
   function load() {
     try {
       var raw = localStorage.getItem(KEY);
@@ -426,107 +1779,344 @@ input[aria-invalid="true"] { border-color: var(--warn); }
       var old = localStorage.getItem(OLDKEY);
       if (old) { var o = JSON.parse(old); if (o && o.basics) return normalize(migrate(o)); }
     } catch (e) {}
-    return normalize(clone(SAMPLE));
+    return normalize(makeBlank());
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var saveTimer = null;
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    var st = $("saveStatus"), lb = $("saveLabel");
+    if (st && lb) {
+      st.classList.add("saving");
+      lb.textContent = "Saving…";
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(function () {
+        st.classList.remove("saving");
+        lb.textContent = "Saved locally";
+      }, 450);
+    }
+  }
   var state = load();
 
-  /* ---------- Editor: menu ---------- */
+  /* ---------- Editor: Section Navigation Rail ---------- */
   function renderNav() {
-    var items = [["basics", "Personal Details"]].concat(state.order.map(function (id) { return [id, SEC[id].label]; })).concat([["check", "Resume check"]]);
+    var items = [["basics", "Personal Details", ICONS.basics]]
+      .concat(state.order.map(function (id) {
+        var icon = ICONS[id] || ICONS.custom;
+        return [id, sectionLabel(id), icon];
+      }))
+      .concat([
+        ["create", "Create section", ICONS.plus],
+        ["check", "Resume check", ICONS.check]
+      ]);
+
     nav.innerHTML = items.map(function (n) {
-      var badge = n[0] === "check" ? '<span class="badge" id="navScore"></span>' : (state.hide[n[0]] ? '<span class="badge">hidden</span>' : "");
-      return (n[0] === "check" ? '<span class="div" aria-hidden="true"></span>' : "") +
-        '<button type="button" data-nav="' + n[0] + '" aria-current="' + (state.active === n[0]) + '">' + n[1] + badge + "</button>";
+      var id = n[0], label = n[1], icon = n[2];
+      var badge = "";
+      if (id === "check") badge = '<span class="nav-badge" id="navScore"></span>';
+      else if (state.hide[id]) badge = '<span class="nav-badge">Hidden</span>';
+      var divider = (id === "check") ? '<span class="nav-divider" aria-hidden="true"></span>' : "";
+      var extraCls = (id === "create") ? " nav-create" : "";
+      return divider + '<button type="button" class="nav-item' + extraCls + '" data-nav="' + esc(id) + '" aria-current="' + (state.active === id) + '">' +
+        icon + '<span>' + esc(label) + '</span>' + badge + "</button>";
     }).join("");
     renderScore();
   }
+
   nav.addEventListener("click", function (e) {
     var b = e.target.closest("[data-nav]");
     if (!b) return;
-    state.active = b.dataset.nav; save(); armed.key = null;
-    renderNav(); renderPanel(); renderScore();
+    state.active = b.dataset.nav;
+    save();
+    armed.key = null;
+    renderNav();
+    renderPanel();
+    renderScore();
   });
 
-  /* ---------- Editor: panel (one section at a time) ---------- */
-  var ICON_LIST = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="4.5" cy="6" r="1.5" fill="currentColor"/><circle cx="4.5" cy="12" r="1.5" fill="currentColor"/><circle cx="4.5" cy="18" r="1.5" fill="currentColor"/></svg>';
-  var ICON_LINK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>';
-  function tbBtn(cmd, label, inner) { return '<button type="button" data-act="cmd" data-cmd="' + cmd + '" title="' + label + '" aria-label="' + label + '">' + inner + "</button>"; }
+  $("headerScoreBtn").addEventListener("click", function () {
+    state.active = "check";
+    save();
+    armed.key = null;
+    renderNav();
+    renderPanel();
+    renderScore();
+    setView("edit");
+  });
+
+  /* ---------- Editor: Active Section Panel ---------- */
+  function tbBtn(cmd, label, inner) {
+    return '<button type="button" data-act="cmd" data-cmd="' + cmd + '" title="' + label + '" aria-label="' + label + '">' + inner + "</button>";
+  }
+
   function rteHTML(id, attrs, val, ph) {
     var s = sanitize(val), empty = isEmptyHtml(s) && !/<li/.test(s);
     return '<div class="rte"><div class="rte-bar" role="toolbar" aria-label="Text formatting">' +
-      tbBtn("insertUnorderedList", "Bullet list", ICON_LIST) + tbBtn("bold", "Bold", "<b>B</b>") + tbBtn("italic", "Italic", "<i>I</i>") + tbBtn("underline", "Underline", "<u>U</u>") +
-      '<button type="button" data-act="link" title="Add link" aria-label="Add link">' + ICON_LINK + "</button></div>" +
+      tbBtn("insertUnorderedList", "Bullet list", ICONS.list) +
+      '<span class="rte-sep" aria-hidden="true"></span>' +
+      tbBtn("bold", "Bold", "<b>B</b>") +
+      tbBtn("italic", "Italic", "<i>I</i>") +
+      tbBtn("underline", "Underline", "<u>U</u>") +
+      '<span class="rte-sep" aria-hidden="true"></span>' +
+      '<button type="button" data-act="link" title="Add link" aria-label="Add link">' + ICONS.link + "</button></div>" +
       '<div class="rte-link" hidden><input type="text" id="' + id + '_url" placeholder="https://example.com" aria-label="Link address">' +
-      '<button type="button" class="btn sm primary" data-act="link-apply">Apply</button><button type="button" class="btn sm" data-act="link-remove">Remove link</button><button type="button" class="btn sm" data-act="link-close">Cancel</button></div>' +
+      '<button type="button" class="btn sm primary" data-act="link-apply">Apply</button>' +
+      '<button type="button" class="btn sm" data-act="link-remove">Remove</button>' +
+      '<button type="button" class="btn sm" data-act="link-close">Cancel</button></div>' +
       '<div class="rte-body' + (empty ? " is-empty" : "") + '" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="' + id + '_l" data-ph="' + esc(ph || "") + '" id="' + id + '" ' + attrs + ">" + s + "</div></div>";
   }
+
   function fieldHTML(f, attrs, val, id, dis) {
-    if (f.t === "check") return '<div class="fld full"><label class="chk" for="' + id + '"><input type="checkbox" id="' + id + '" ' + attrs + (val ? " checked" : "") + "> " + esc(f.l) + "</label></div>";
-    if (f.t === "rich") return '<div class="fld full"><span class="lbl" id="' + id + '_l">' + esc(f.l) + "</span>" + rteHTML(id, attrs, val, f.ph) + "</div>";
-    return '<div class="fld' + (f.half ? "" : " full") + '"><label for="' + id + '">' + esc(f.l) + '</label><input type="text" id="' + id + '" ' + attrs + ' value="' + esc(val) + '" placeholder="' + esc(f.ph || "") + '"' + (dis ? " disabled" : "") + "></div>";
+    if (f.t === "check") return '<div class="field full"><label class="checkbox-label" for="' + id + '"><input type="checkbox" id="' + id + '" ' + attrs + (val ? " checked" : "") + "> " + esc(f.l) + "</label></div>";
+    if (f.t === "rich") return '<div class="field full"><span class="field-label" id="' + id + '_l">' + esc(f.l) + "</span>" + rteHTML(id, attrs, val, f.ph) + "</div>";
+    return '<div class="field' + (f.half ? "" : " full") + '"><label for="' + id + '">' + esc(f.l) + '</label><input type="text" id="' + id + '" ' + attrs + ' value="' + esc(val) + '" placeholder="' + esc(f.ph || "") + '"' + (dis ? " disabled" : "") + "></div>";
   }
+
   var armed = { key: null, timer: null };
   function armBtn(act, id, label) {
     var on = armed.key === act + ":" + id;
-    return '<button type="button" class="btn sm' + (on ? " warn" : "") + '" data-act="' + act + '" data-s="' + id + '">' + (on ? "Click again to confirm" : label) + "</button>";
+    return '<button type="button" class="btn sm' + (on ? " warn" : "") + '" data-act="' + act + '" data-s="' + esc(id) + '">' + (on ? "Confirm?" : label) + "</button>";
   }
+
+  function chipsPreviewHTML(raw, containerId) {
+    var arr = String(raw || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+    return '<div class="skill-preview-wrap" id="' + containerId + '"' + (arr.length ? "" : " hidden") + '>' +
+      '<span class="skill-preview-label">Parsed tags (' + arr.length + ')</span>' +
+      '<div class="skill-preview-chips">' + arr.map(function (s) { return '<span class="skill-tag">' + esc(s) + '</span>'; }).join("") + '</div></div>';
+  }
+
+  function createCustomSection(label, type) {
+    var cleanLabel = String(label || "").trim();
+    if (!cleanLabel) return null;
+    var cid = "custom_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 5);
+    var safeType = (type === "chips" || type === "rich") ? type : "entries";
+    state.customSections[cid] = {
+      label: cleanLabel,
+      type: safeType,
+      items: [blankCustomEntry()],
+      chips: "",
+      rich: ""
+    };
+    state.order.push(cid);
+    state.active = cid;
+    createDraft = { label: "", type: "entries" };
+    return cid;
+  }
+
   function renderPanel() {
     var id = state.active, h = "";
     if (id === "check") {
-      h = '<div class="card"><div class="hd"><h2>Resume check</h2></div><div id="score"></div></div>' +
-        '<div class="card"><div class="hd"><h2>Start over</h2></div><p class="note">Everything saves in this browser as you type.</p><div style="display:flex; gap:8px; flex-wrap:wrap">' +
-        armBtn("sample", "all", "Load example") + armBtn("blank", "all", "Start blank") + "</div></div>";
-      editor.innerHTML = h; renderScore(); return;
+      h = '<div class="editor-card"><div class="card-header"><div class="card-title-group">' + ICONS.check + '<h2>Resume Quality Check</h2></div></div><div id="score"></div></div>' +
+        '<div class="editor-card"><div class="card-header"><div class="card-title-group"><h2>Workspace Actions</h2></div></div>' +
+        '<p class="helper-note">Your edits auto-save directly to your browser\'s local storage. Load the sample dataset to explore templates or reset to a clean slate.</p>' +
+        '<div style="display:flex; gap:8px; flex-wrap:wrap">' +
+        armBtn("sample", "all", "Load sample resume") + armBtn("blank", "all", "Clear all & start blank") + "</div></div>";
+      editor.innerHTML = h;
+      renderScore();
+      return;
     }
-    var label = id === "basics" ? "Personal Details" : SEC[id].label;
-    h = '<div class="card"><div class="hd"><h2>' + label + '</h2><div class="ctl">';
-    if (ORDERABLE[id]) {
+
+    if (id === "create") {
+      var presetsHTML = CUSTOM_PRESETS.map(function (pr) {
+        return '<button type="button" class="preset-chip" data-act="preset" data-plabel="' + esc(pr.label) + '" data-ptype="' + pr.type + '">+ ' + esc(pr.label) + '</button>';
+      }).join("");
+
+      var formats = [
+        { k: "entries", t: "Structured Entries", d: "Title, organization, date, link & rich-text bullets (e.g., Certifications, Awards)." },
+        { k: "chips", t: "Tag Chips / List", d: "Comma-separated pills ideal for Languages, Tools, or Core Competencies." },
+        { k: "rich", t: "Freeform Rich Text", d: "Flexible paragraph or bulleted list for Publications, Interests, or Summary blocks." }
+      ];
+      var formatsHTML = formats.map(function (fm) {
+        return '<button type="button" class="format-opt" data-act="ctype" data-ctype="' + fm.k + '" aria-pressed="' + (createDraft.type === fm.k) + '">' +
+          '<strong>' + fm.t + '</strong><span>' + fm.d + '</span></button>';
+      }).join("");
+
+      h = '<div class="editor-card">' +
+        '<div class="card-header"><div class="card-title-group">' + ICONS.plus + '<h2>Create Custom Section</h2></div></div>' +
+        '<p class="helper-note">Add any tailored section to your resume. You can reorder, hide, rename, or delete custom sections at any time.</p>' +
+        '<div class="field full">' +
+          '<label for="new_sec_title">Section Heading</label>' +
+          '<input type="text" id="new_sec_title" data-act="clabel" value="' + esc(createDraft.label) + '" placeholder="e.g., Certifications, Awards, Languages, Volunteering">' +
+          '<div class="preset-row" aria-label="Quick section presets">' + presetsHTML + '</div>' +
+        '</div>' +
+        '<div class="field full">' +
+          '<span class="field-label">Section Layout Format</span>' +
+          '<div class="format-grid" role="group" aria-label="Section layout format">' + formatsHTML + '</div>' +
+        '</div>' +
+        '<div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">' +
+          '<button type="button" class="btn primary" data-act="create-submit">' + ICONS.plus + ' Create & Add to Resume</button>' +
+          '<button type="button" class="btn" data-act="create-cancel">Cancel</button>' +
+        '</div>' +
+      '</div>';
+      editor.innerHTML = h;
+      return;
+    }
+
+    var isCustom = isCustomId(id);
+    var label = sectionLabel(id);
+    var icon = ICONS[id] || ICONS.custom;
+
+    h = '<div class="editor-card"><div class="card-header"><div class="card-title-group">' + icon + '<h2>' + esc(label) + '</h2></div><div class="card-controls">';
+    if (isSectionId(id)) {
       var idx = state.order.indexOf(id), hid = !!state.hide[id];
-      h += '<button type="button" class="btn sm" data-act="hide" data-s="' + id + '" aria-pressed="' + hid + '" title="Hide this section on the resume">' + (hid ? "Show on resume" : "Hide") + "</button>" +
-        '<button type="button" class="iconbtn" data-act="up" data-s="' + id + '" aria-label="Move ' + label + ' up on the resume"' + (idx === 0 ? " disabled" : "") + ">↑</button>" +
-        '<button type="button" class="iconbtn" data-act="down" data-s="' + id + '" aria-label="Move ' + label + ' down on the resume"' + (idx === state.order.length - 1 ? " disabled" : "") + ">↓</button>";
+      h += '<button type="button" class="btn sm" data-act="hide" data-s="' + esc(id) + '" aria-pressed="' + hid + '" title="Toggle visibility on resume">' + (hid ? "Hidden" : "Visible") + "</button>" +
+        '<button type="button" class="icon-btn" data-act="up" data-s="' + esc(id) + '" title="Move section up" aria-label="Move ' + esc(label) + ' up"' + (idx === 0 ? " disabled" : "") + ">" + ICONS.up + "</button>" +
+        '<button type="button" class="icon-btn" data-act="down" data-s="' + esc(id) + '" title="Move section down" aria-label="Move ' + esc(label) + ' down"' + (idx === state.order.length - 1 ? " disabled" : "") + ">" + ICONS.down + "</button>";
     }
-    h += armBtn("reset", id, "Reset") + "</div></div>";
+    if (isCustom) {
+      h += armBtn("delsec", id, "Delete section");
+    } else {
+      h += armBtn("reset", id, "Reset");
+    }
+    h += "</div></div>";
+
     if (id === "basics") {
-      h += '<div class="grid2">';
+      h += '<div class="form-grid">';
       BASICS.forEach(function (f) {
         if (f.k === "summary") h += fieldHTML(f, 'data-s="summary"', state.summary, "summary");
         else h += fieldHTML(f, 'data-s="basics" data-k="' + f.k + '"', state.basics[f.k], "b_" + f.k);
       });
       h += "</div>";
     } else if (id === "skills") {
-      h += '<p class="note">Separate skills with commas.</p><div class="fld"><textarea id="t_skills" data-s="skills" rows="5" placeholder="SQL, Python, Power BI" aria-label="Skills">' + esc(state.skills) + "</textarea></div>";
+      h += '<p class="helper-note">Enter your skills separated by commas. They will render as clean, scannable tags on your resume.</p>' +
+        '<div class="field"><textarea id="t_skills" data-s="skills" rows="4" placeholder="SQL, Python, Power BI, Data Modeling, Stakeholder Management" aria-label="Skills">' + esc(state.skills) + "</textarea>" +
+        chipsPreviewHTML(state.skills, "skillPreviewWrap") + '</div>';
+    } else if (isCustom) {
+      var cs = state.customSections[id];
+      h += '<div class="field full"><label for="cs_title_' + esc(id) + '">Section Heading</label>' +
+        '<input type="text" id="cs_title_' + esc(id) + '" data-s="' + esc(id) + '" data-csprop="label" value="' + esc(cs.label) + '" placeholder="Section title"></div>';
+
+      if (cs.type === "chips") {
+        h += '<p class="helper-note">Separate items with commas. They will appear as clean tags on your resume.</p>' +
+          '<div class="field"><textarea id="cs_chips_' + esc(id) + '" data-s="' + esc(id) + '" data-csprop="chips" rows="4" placeholder="English (Native), Spanish (Fluent), French (Conversational)">' + esc(cs.chips) + '</textarea>' +
+          chipsPreviewHTML(cs.chips, "csPreviewWrap_" + esc(id)) + '</div>';
+      } else if (cs.type === "rich") {
+        h += '<div class="field full"><span class="field-label" id="cs_rich_' + esc(id) + '_l">Section Content</span>' +
+          rteHTML("cs_rich_" + esc(id), 'data-s="' + esc(id) + '" data-csprop="rich"', cs.rich, "Write paragraphs or bullet points for this section...") + '</div>';
+      } else {
+        if (!cs.items.length) h += '<p class="helper-note">No entries added yet. Click below to add your first item.</p>';
+        cs.items.forEach(function (it, i) {
+          var liveSub = it.title ? " · " + it.title : (it.sub ? " · " + it.sub : "");
+          h += '<div class="entry-card"><div class="entry-header"><div class="entry-title"><span class="entry-num">' + (i + 1) + '</span><span>Entry</span><span class="entry-subtitle">' + esc(liveSub) + '</span></div>' +
+            '<button type="button" class="icon-btn danger" data-act="del" data-s="' + esc(id) + '" data-i="' + i + '" title="Remove entry" aria-label="Remove entry ' + (i + 1) + '">' + ICONS.trash + '</button></div><div class="form-grid">';
+          CUSTOM_ENTRY_FIELDS.forEach(function (f) {
+            h += fieldHTML(f, 'data-s="' + esc(id) + '" data-i="' + i + '" data-k="' + f.k + '"', it[f.k], esc(id) + "_" + i + "_" + f.k, false);
+          });
+          h += "</div></div>";
+        });
+        h += '<button type="button" class="btn add-entry-btn" data-act="add" data-s="' + esc(id) + '">' + ICONS.plus + " Add entry</button>";
+      }
     } else {
       var sc = SEC[id];
-      if (!state[id].length) h += '<p class="note">No ' + sc.label.toLowerCase() + " added yet.</p>";
+      if (!state[id].length) h += '<p class="helper-note">No ' + sc.label.toLowerCase() + " added yet. Click below to add your first entry.</p>";
       state[id].forEach(function (it, i) {
-        h += '<div class="entry"><div class="eh"><span>' + sc.item + " " + (i + 1) + '</span><button type="button" class="iconbtn link-danger" data-act="del" data-s="' + id + '" data-i="' + i + '" aria-label="Remove ' + sc.item + " " + (i + 1) + '">×</button></div><div class="grid2">';
+        var liveTitle = it[sc.titleKey] || it[sc.subKey] || "";
+        var subBadge = liveTitle ? ' · ' + liveTitle : '';
+        h += '<div class="entry-card"><div class="entry-header"><div class="entry-title"><span class="entry-num">' + (i + 1) + '</span><span>' + sc.item + '</span><span class="entry-subtitle">' + esc(subBadge) + '</span></div>' +
+          '<button type="button" class="icon-btn danger" data-act="del" data-s="' + id + '" data-i="' + i + '" title="Remove ' + sc.item.toLowerCase() + '" aria-label="Remove ' + sc.item + " " + (i + 1) + '">' + ICONS.trash + '</button></div><div class="form-grid">';
         sc.fields.forEach(function (f) {
           h += fieldHTML(f, 'data-s="' + id + '" data-i="' + i + '" data-k="' + f.k + '"', it[f.k], id + "_" + i + "_" + f.k, id === "experience" && f.k === "end" && it.current);
         });
         h += "</div></div>";
       });
-      h += '<button type="button" class="btn sm" data-act="add" data-s="' + id + '" style="margin-top:12px">+ Add ' + sc.item.toLowerCase() + "</button>";
+      h += '<button type="button" class="btn add-entry-btn" data-act="add" data-s="' + id + '">' + ICONS.plus + " Add " + sc.item.toLowerCase() + "</button>";
     }
     editor.innerHTML = h + "</div>";
   }
 
-  /* ---------- Editor: events ---------- */
+  /* ---------- Editor: Events & Rich Text Formatting ---------- */
   function cleanStore(body) { var v = sanitize(body.innerHTML); return isEmptyHtml(v) && !/<li/.test(v) ? "" : v; }
   function syncEmpty(body) { body.classList.toggle("is-empty", !body.textContent.trim() && !body.querySelector("li")); }
+
+  function updateToolbarStates() {
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    var anchor = sel.anchorNode;
+    var el = anchor && (anchor.nodeType === 3 ? anchor.parentNode : anchor);
+    var rte = el && el.closest ? el.closest(".rte") : null;
+    document.querySelectorAll(".rte-bar button[data-cmd]").forEach(function (btn) {
+      if (!rte || !rte.contains(btn)) { btn.classList.remove("is-active"); return; }
+      try {
+        btn.classList.toggle("is-active", document.queryCommandState(btn.dataset.cmd));
+      } catch (e) { btn.classList.remove("is-active"); }
+    });
+  }
+  document.addEventListener("selectionchange", updateToolbarStates);
+
+  function syncLiveEntrySubtitle(target) {
+    var card = target.closest && target.closest(".entry-card");
+    if (!card) return;
+    var s = target.dataset.s, i = +target.dataset.i;
+    var subEl = card.querySelector(".entry-subtitle");
+    if (!subEl) return;
+    if (isCustomId(s) && state.customSections[s]) {
+      var cit = state.customSections[s].items[i];
+      if (!cit) return;
+      var clive = cit.title || cit.sub || "";
+      subEl.textContent = clive ? " · " + clive : "";
+      return;
+    }
+    if (!SEC[s]) return;
+    var sc = SEC[s], it = state[s][i];
+    if (!it) return;
+    var live = it[sc.titleKey] || it[sc.subKey] || "";
+    subEl.textContent = live ? " · " + live : "";
+  }
+
+  function updateChipsPreviewDOM(wrapId, rawText) {
+    var wrap = $(wrapId);
+    if (!wrap) return;
+    var arr = String(rawText || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+    wrap.hidden = arr.length === 0;
+    var lbl = wrap.querySelector(".skill-preview-label");
+    var box = wrap.querySelector(".skill-preview-chips");
+    if (lbl) lbl.textContent = "Parsed tags (" + arr.length + ")";
+    if (box) box.innerHTML = arr.map(function (sk) { return '<span class="skill-tag">' + esc(sk) + '</span>'; }).join("");
+  }
+
   function onEdit(e) {
-    var t = e.target, s = t.dataset && t.dataset.s;
+    var t = e.target;
+    if (t.dataset && t.dataset.act === "clabel") {
+      createDraft.label = t.value;
+      t.removeAttribute("aria-invalid");
+      return;
+    }
+
+    var s = t.dataset && t.dataset.s;
     if (!s) return;
     var isRte = t.classList.contains("rte-body");
     var v = isRte ? cleanStore(t) : (t.type === "checkbox" ? t.checked : t.value);
-    if (isRte) syncEmpty(t);
+    if (isRte) { syncEmpty(t); updateToolbarStates(); }
+
     if (s === "basics") state.basics[t.dataset.k] = v;
-    else if (t.dataset.i !== undefined) state[s][+t.dataset.i][t.dataset.k] = v;
-    else state[s] = v;
+    else if (isCustomId(s) && state.customSections[s]) {
+      var cs = state.customSections[s];
+      if (t.dataset.csprop) {
+        cs[t.dataset.csprop] = v;
+        if (t.dataset.csprop === "label") {
+          var h2 = editor.querySelector(".card-title-group h2");
+          if (h2) h2.textContent = v.trim() || "Untitled Section";
+          var navLabel = nav.querySelector('[data-nav="' + s + '"] span');
+          if (navLabel) navLabel.textContent = v.trim() || "Untitled Section";
+        } else if (t.dataset.csprop === "chips") {
+          updateChipsPreviewDOM("csPreviewWrap_" + s, v);
+        }
+      } else if (t.dataset.i !== undefined) {
+        cs.items[+t.dataset.i][t.dataset.k] = v;
+        syncLiveEntrySubtitle(t);
+      }
+    } else if (t.dataset.i !== undefined) {
+      state[s][+t.dataset.i][t.dataset.k] = v;
+      syncLiveEntrySubtitle(t);
+    } else {
+      state[s] = v;
+    }
+
+    if (s === "skills") updateChipsPreviewDOM("skillPreviewWrap", v);
     if (t.type === "checkbox") { var end = $(s + "_" + t.dataset.i + "_end"); if (end) end.disabled = !!v; }
     update();
   }
+
   editor.addEventListener("input", onEdit);
   editor.addEventListener("change", onEdit);
   editor.addEventListener("mousedown", function (e) { if (e.target.closest(".rte-bar button")) e.preventDefault(); });
@@ -540,6 +2130,7 @@ input[aria-invalid="true"] { border-color: var(--warn); }
   var savedRange = null;
   function rteOf(el) { return el.closest(".rte"); }
   function fireInput(body) { body.dispatchEvent(new Event("input", { bubbles: true })); }
+
   function openLink(rte) {
     var body = rte.querySelector(".rte-body"), bar = rte.querySelector(".rte-link"), inp = bar.querySelector("input");
     var sel = window.getSelection(), r = sel.rangeCount ? sel.getRangeAt(0) : null;
@@ -563,7 +2154,16 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     else document.execCommand("createLink", false, href);
     closeLink(rte); fireInput(body);
   }
+
   editor.addEventListener("keydown", function (e) {
+    if (e.target && e.target.id === "new_sec_title" && e.key === "Enter") {
+      e.preventDefault();
+      var cid = createCustomSection(e.target.value, createDraft.type);
+      if (!cid) { e.target.setAttribute("aria-invalid", "true"); e.target.focus(); return; }
+      renderNav(); renderPanel(); update();
+      toast("Custom section added");
+      return;
+    }
     var inp = e.target.closest && e.target.closest(".rte-link input");
     if (!inp) return;
     if (e.key === "Enter") { e.preventDefault(); applyLink(rteOf(inp), false); }
@@ -577,12 +2177,52 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     else if (id === "projects") state.projects = [];
     else state[id] = b[id];
   }
-  function replaceState(src) { var a = state.active; state = normalize(clone(src)); state.active = a; renderNav(); renderPanel(); renderTools(); update(); }
+  function replaceState(src) {
+    var a = state.active;
+    state = normalize(clone(src));
+    state.active = (a === "basics" || a === "check" || BUILTIN_ORDER[a] || state.customSections[a]) ? a : "basics";
+    renderNav(); renderPanel(); renderTools(); update();
+  }
 
   editor.addEventListener("click", function (e) {
     var b = e.target.closest("[data-act]");
     if (!b) return;
     var act = b.dataset.act, s = b.dataset.s, i = +b.dataset.i;
+
+    if (act === "preset") {
+      createDraft.label = b.dataset.plabel || "";
+      createDraft.type = b.dataset.ptype || "entries";
+      renderPanel();
+      var inp = $("new_sec_title");
+      if (inp) inp.focus();
+      return;
+    }
+    if (act === "ctype") {
+      createDraft.type = b.dataset.ctype || "entries";
+      renderPanel();
+      return;
+    }
+    if (act === "create-submit") {
+      var titleInp = $("new_sec_title");
+      var rawTitle = titleInp ? titleInp.value : createDraft.label;
+      var newId = createCustomSection(rawTitle, createDraft.type);
+      if (!newId) {
+        if (titleInp) { titleInp.setAttribute("aria-invalid", "true"); titleInp.focus(); }
+        toast("Enter a section heading first");
+        return;
+      }
+      renderNav(); renderPanel(); update();
+      toast("Custom section added");
+      var firstField = editor.querySelector(".entry-card input, textarea, .rte-body");
+      if (firstField) firstField.focus();
+      return;
+    }
+    if (act === "create-cancel") {
+      state.active = "basics";
+      renderNav(); renderPanel();
+      return;
+    }
+
     if (act === "cmd") {
       var body = rteOf(b).querySelector(".rte-body");
       if (document.activeElement !== body) body.focus();
@@ -593,12 +2233,22 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     if (act === "link-remove") { applyLink(rteOf(b), true); return; }
     if (act === "link-close") { closeLink(rteOf(b)); return; }
 
-    if (act === "reset" || act === "sample" || act === "blank") {
+    if (act === "reset" || act === "sample" || act === "blank" || act === "delsec") {
       var key = act + ":" + s;
       if (armed.key === key) {
         clearTimeout(armed.timer); armed.key = null;
-        if (act === "reset") { doReset(s); renderPanel(); update(); toast("Section cleared"); }
-        else { replaceState(act === "sample" ? SAMPLE : makeBlank()); toast(act === "sample" ? "Example loaded" : "Blank resume ready"); }
+        if (act === "reset") {
+          doReset(s); renderPanel(); update(); toast("Section cleared");
+        } else if (act === "delsec") {
+          delete state.customSections[s];
+          delete state.hide[s];
+          state.order = state.order.filter(function (x) { return x !== s; });
+          state.active = "basics";
+          renderNav(); renderPanel(); update(); toast("Custom section deleted");
+        } else {
+          replaceState(act === "sample" ? SAMPLE : makeBlank());
+          toast(act === "sample" ? "Sample resume loaded" : "Blank resume ready");
+        }
       } else {
         armed.key = key; clearTimeout(armed.timer);
         armed.timer = setTimeout(function () { armed.key = null; renderPanel(); }, 3500);
@@ -616,19 +2266,46 @@ input[aria-invalid="true"] { border-color: var(--warn); }
       if (keep) keep.focus();
     } else if (act === "hide") {
       state.hide[s] = !state.hide[s]; renderNav(); renderPanel(); update();
+      toast(state.hide[s] ? "Section hidden on resume" : "Section visible on resume");
     } else if (act === "add") {
-      state[s].push(blankItem(s)); renderPanel(); update();
-      var ents = editor.querySelectorAll(".entry"), last = ents[ents.length - 1];
+      if (isCustomId(s) && state.customSections[s]) state.customSections[s].items.push(blankCustomEntry());
+      else state[s].push(blankItem(s));
+      renderPanel(); update();
+      var ents = editor.querySelectorAll(".entry-card"), last = ents[ents.length - 1];
       if (last) { var f = last.querySelector("input"); if (f) f.focus(); }
     } else if (act === "del") {
-      state[s].splice(i, 1); renderPanel(); update();
+      if (isCustomId(s) && state.customSections[s]) state.customSections[s].items.splice(i, 1);
+      else state[s].splice(i, 1);
+      renderPanel(); update();
     }
   });
 
-  /* ---------- Preview ---------- */
+  /* ---------- Live A4 Preview Rendering ---------- */
   function rich(h) { return isEmptyHtml(h) && !/<li/.test(h) ? "" : '<div class="rich">' + sanitize(h) + "</div>"; }
   function sectionHTML(id) {
     var h = "";
+    if (isCustomId(id) && state.customSections[id]) {
+      var cs = state.customSections[id];
+      var heading = esc(cs.label || "Custom Section");
+      if (cs.type === "chips") {
+        var cArr = String(cs.chips || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+        if (!cArr.length) return "";
+        return "<section><h3>" + heading + '</h3><div class="chips">' + cArr.map(function (c) { return '<span class="chip">' + esc(c) + "</span>"; }).join("") + "</div></section>";
+      }
+      if (cs.type === "rich") {
+        var rHtml = rich(cs.rich);
+        return rHtml ? "<section><h3>" + heading + "</h3>" + rHtml + "</section>" : "";
+      }
+      var validItems = (cs.items || []).filter(function (x) { return x.title || x.sub || x.date || x.link || !isEmptyHtml(x.desc); });
+      if (!validItems.length) return "";
+      validItems.forEach(function (x) {
+        var rightMeta = [x.date ? esc(x.date) : "", x.link ? '<span class="lnk">' + linkHTML(x.link) + "</span>" : ""].filter(Boolean).join(" · ");
+        h += '<div class="ent"><div class="row"><b>' + esc(x.title) + '</b>' + (rightMeta ? '<span class="dt">' + rightMeta + "</span>" : "") + "</div>";
+        if (x.sub) h += '<div class="sub">' + esc(x.sub) + "</div>";
+        h += rich(x.desc) + "</div>";
+      });
+      return "<section><h3>" + heading + "</h3>" + h + "</section>";
+    }
     if (id === "experience") {
       var xs = state.experience.filter(function (x) { return x.role || x.company || !isEmptyHtml(x.desc); });
       if (!xs.length) return "";
@@ -665,6 +2342,7 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     }
     return "";
   }
+
   function skillsArr() { return String(state.skills || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean); }
   function hrefFor(v) {
     v = String(v || "").trim();
@@ -692,11 +2370,12 @@ input[aria-invalid="true"] { border-color: var(--warn); }
   }
   function headHTML() {
     var b = state.basics;
-    return "<header><h1>" + (esc(b.name) || '<span class="empty">Your name</span>') + "</h1>" +
+    return "<header><h1>" + (esc(b.name) || '<span class="empty">Your Full Name</span>') + "</h1>" +
       (b.title ? '<div class="ttl">' + esc(b.title) + "</div>" : "") +
       (state.template === "sidebar" ? "" : '<div class="contact">' + contactItems() + "</div>") + "</header>";
   }
   function summaryHTML() { return rich(state.summary) ? "<section><h3>Summary</h3>" + rich(state.summary) + "</section>" : ""; }
+
   function renderPreview() {
     paper.className = "paper t-" + state.template + " f-" + state.font;
     paper.style.setProperty("--ra", state.accent);
@@ -704,9 +2383,11 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     var html;
     if (state.template === "sidebar") {
       var sk = skillsArr(), showSk = !state.hide.skills && sk.length;
+      var chipCustomIds = shown.filter(function (i) { return isCustomId(i) && state.customSections[i] && state.customSections[i].type === "chips"; });
       var side = '<aside class="side"><h3>Contact</h3><div class="contact">' + contactItems() + "</div>" +
-        (showSk ? '<h3>Skills</h3><div class="chips">' + sk.map(function (s) { return '<span class="chip">' + esc(s) + "</span>"; }).join("") + "</div>" : "") + "</aside>";
-      var main = '<div class="main">' + headHTML() + summaryHTML() + shown.filter(function (i) { return i !== "skills"; }).map(sectionHTML).join("") + "</div>";
+        (showSk ? '<h3>Skills</h3><div class="chips">' + sk.map(function (s) { return '<span class="chip">' + esc(s) + "</span>"; }).join("") + "</div>" : "") +
+        chipCustomIds.map(sectionHTML).join("") + "</aside>";
+      var main = '<div class="main">' + headHTML() + summaryHTML() + shown.filter(function (i) { return i !== "skills" && chipCustomIds.indexOf(i) < 0; }).map(sectionHTML).join("") + "</div>";
       html = '<div class="wrap2">' + side + main + "</div>";
     } else {
       html = '<div class="inner">' + headHTML() + summaryHTML() + shown.map(sectionHTML).join("") + "</div>";
@@ -714,49 +2395,65 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     paper.innerHTML = html;
     fit();
   }
+
   function fit() {
-    var w = stage.clientWidth || 794, sc = Math.min(1, w / 794);
+    var style = window.getComputedStyle(stage);
+    var padX = (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0);
+    var padY = (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0);
+    var w = Math.max(240, (stage.clientWidth || 794) - padX);
+    var sc = Math.min(1, w / 794);
     paper.style.transform = "scale(" + sc + ")";
     paper.style.marginLeft = Math.max(0, (w - 794 * sc) / 2) + "px";
     var h = paper.offsetHeight;
-    stage.style.height = Math.ceil(h * sc) + "px";
+    stage.style.height = Math.ceil(h * sc + padY) + "px";
     paper.querySelectorAll(".pbreak").forEach(function (n) { n.remove(); });
     var pages = Math.max(1, Math.ceil((h - 2) / PAGE_H));
     for (var pg = 1; pg < pages; pg++) {
-      var d = document.createElement("div"); d.className = "pbreak"; d.style.top = pg * PAGE_H + "px"; d.textContent = "Page " + (pg + 1) + " starts here"; paper.appendChild(d);
+      var d = document.createElement("div");
+      d.className = "pbreak";
+      d.style.top = pg * PAGE_H + "px";
+      d.textContent = "Page " + (pg + 1) + " break";
+      paper.appendChild(d);
     }
     paper._pages = pages;
-    $("pageinfo").textContent = pages + (pages === 1 ? " page" : " pages") + " · A4";
+    var zoomPct = Math.round(sc * 100);
+    $("pageinfo").textContent = pages + (pages === 1 ? " page" : " pages") + " · A4 · " + zoomPct + "%";
     renderScore();
   }
 
-  /* ---------- Resume check ---------- */
+  /* ---------- Resume Quality Check ---------- */
   function renderScore() {
     var b = state.basics, xs = state.experience.filter(function (x) { return x.role || !isEmptyHtml(x.desc); });
     var allBullets = []; xs.forEach(function (x) { allBullets = allBullets.concat(textLines(x.desc)); });
     var sumLen = htmlToText(state.summary).length;
     var checks = [
-      [b.name && b.title, "Name and job title are filled in", "Add both so a recruiter knows who you are in one glance."],
-      [b.email && b.phone, "Email and phone are filled in", "Add both ways to reach you."],
-      [sumLen >= 150 && sumLen <= 450, "Summary is 150 to 450 characters", "Yours is " + sumLen + ". Aim for two or three sentences."],
-      [xs.length > 0 && xs.every(function (x) { return textLines(x.desc).length >= 2; }), "Every role has at least two achievements", "Add a second bullet to each role."],
-      [allBullets.some(function (l) { return /\d/.test(l); }), "Achievements include numbers", "Add a count, percentage or time saved to at least one bullet."],
-      [state.education.some(function (x) { return x.degree || x.school; }), "Education is listed", "Add your degree or course."],
-      [state.education.some(function (x) { return x.score && x.score.trim(); }), "Education has a GPA or percentage", "Add your CGPA or percentage in the Education section."],
-      [skillsArr().length >= 5, "At least 5 skills", "List the tools and skills the job asks for."],
-      [(paper._pages || 1) === 1, "Fits on one page", "Trim older roles or shorten bullets to get back to one page."]
+      [b.name && b.title, "Name and headline are filled in", "Add both so recruiters immediately recognize your role."],
+      [b.email && b.phone, "Email and phone number are included", "Provide both primary contact channels."],
+      [sumLen >= 150 && sumLen <= 450, "Professional summary is 150–450 characters", "Currently " + sumLen + " characters. Aim for two or three focused sentences."],
+      [xs.length > 0 && xs.every(function (x) { return textLines(x.desc).length >= 2; }), "Every role has at least two bullet points", "Add a second bullet highlighting impact for each position."],
+      [allBullets.some(function (l) { return /\d/.test(l); }), "Experience bullets include measurable numbers", "Quantify results with a metric, percentage, or time saved."],
+      [state.education.some(function (x) { return x.degree || x.school; }), "Education history is listed", "Include your degree, institution, or relevant coursework."],
+      [state.education.some(function (x) { return x.score && x.score.trim(); }), "Education includes a GPA or grade", "Add your CGPA, GPA, or percentage in Education."],
+      [skillsArr().length >= 5, "At least 5 skills are listed", "Add core tools and domain skills matching your target role."],
+      [(paper._pages || 1) === 1, "Fits cleanly onto a single A4 page", "Trim older roles or tighten descriptions to keep your resume to 1 page."]
     ];
     var pass = checks.filter(function (c) { return c[0]; }).length, pct = Math.round(pass / checks.length * 100);
+
     var nb = $("navScore"); if (nb) nb.textContent = pct + "%";
+    var hbText = $("headerScoreText"); if (hbText) hbText.textContent = pct + "%";
+    var hbRing = $("headerScoreRing"); if (hbRing) hbRing.style.setProperty("--pct", pct);
+
     var el = $("score"); if (!el) return;
-    var h = '<div class="score"><div class="num">' + pct + '<small>/100</small></div><div><div class="bar" aria-hidden="true"><i style="width:' + pct + '%"></i></div></div></div><ul class="checks">';
+    var h = '<div class="score-hero"><div class="score-num">' + pct + '<small>/100</small></div>' +
+      '<div class="score-meter-wrap"><div class="score-meter-label"><span>Readiness Score</span><span>' + pass + ' of ' + checks.length + ' checks passed</span></div>' +
+      '<div class="bar" aria-hidden="true"><i style="width:' + pct + '%"></i></div></div></div><ul class="checks">';
     checks.forEach(function (c) {
-      h += '<li><span class="' + (c[0] ? "ok" : "no") + '" aria-hidden="true">' + (c[0] ? "✓" : "!") + "</span><span>" + esc(c[1]) + (c[0] ? "" : '<span class="tip">' + esc(c[2]) + "</span>") + "</span></li>";
+      h += '<li><span class="check-icon ' + (c[0] ? "ok" : "no") + '" aria-hidden="true">' + (c[0] ? "✓" : "!") + "</span><div><strong>" + esc(c[1]) + "</strong>" + (c[0] ? "" : '<span class="tip">' + esc(c[2]) + "</span>") + "</div></li>";
     });
     el.innerHTML = h + "</ul>";
   }
 
-  /* ---------- Plain text ---------- */
+  /* ---------- Plain Text Export ---------- */
   function plainText() {
     var b = state.basics, out = [];
     if (b.name) out.push(b.name.toUpperCase());
@@ -768,6 +2465,27 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     state.order.forEach(function (id) {
       if (state.hide[id]) return;
       var t = [];
+      if (isCustomId(id) && state.customSections[id]) {
+        var cs = state.customSections[id];
+        if (cs.type === "chips") {
+          var cArr = String(cs.chips || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+          if (cArr.length) t.push(cArr.join(", "));
+        } else if (cs.type === "rich") {
+          var rTx = htmlToText(cs.rich);
+          if (rTx) t.push(rTx);
+        } else {
+          (cs.items || []).forEach(function (x) {
+            if (!(x.title || x.sub || x.date || x.link || !isEmptyHtml(x.desc))) return;
+            var head = [x.title, x.sub].filter(Boolean).join(", ");
+            var tail = [x.date, x.link].filter(Boolean).join(" | ");
+            t.push(head + (tail ? " (" + tail + ")" : ""));
+            var tx = htmlToText(x.desc); if (tx) t.push(tx);
+            t.push("");
+          });
+        }
+        if (t.length) { out.push(""); out.push((cs.label || "CUSTOM SECTION").toUpperCase()); out = out.concat(t); }
+        return;
+      }
       if (id === "experience") state.experience.forEach(function (x) {
         if (!(x.role || x.company || !isEmptyHtml(x.desc))) return;
         var d = dates(x.start, x.current ? "Present" : x.end);
@@ -794,32 +2512,65 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     });
     return out.join("\n").replace(/\n{3,}/g, "\n\n").trim();
   }
+
   $("copyBtn").addEventListener("click", function () {
     var text = plainText(), box = $("txtbox"), ta = $("txt");
     ta.value = text;
-    function fallback() { box.hidden = false; setView("preview"); ta.focus(); ta.select(); toast("Select the text and copy it"); }
-    try { navigator.clipboard.writeText(text).then(function () { box.hidden = true; toast("Copied resume text"); }, fallback); }
-    catch (e) { fallback(); }
+    function fallback() {
+      box.hidden = false;
+      setView("preview");
+      ta.focus();
+      ta.select();
+      try {
+        if (document.execCommand("copy")) {
+          box.hidden = true;
+          toast("Copied resume as plain text");
+          return;
+        }
+      } catch (err) {}
+      toast("Select the text below to copy");
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { box.hidden = true; toast("Copied resume as plain text"); }, fallback);
+    } else {
+      fallback();
+    }
   });
 
-  /* ---------- PDF ---------- */
+  /* ---------- PDF Export ---------- */
   var CAN_PRINT = true;
   try { CAN_PRINT = window.top === window.self; } catch (e) { CAN_PRINT = false; }
   $("pdfBtn").addEventListener("click", function () {
-    if (!CAN_PRINT) { $("pdfnote").hidden = false; setView("preview"); $("pdfnote").scrollIntoView({ block: "nearest" }); return; }
+    if (!CAN_PRINT) {
+      $("pdfnote").hidden = false;
+      setView("preview");
+      $("pdfnote").scrollIntoView({ block: "nearest" });
+      return;
+    }
     setView("preview");
-    toast('Choose "Save as PDF" as the destination');
+    toast('Choose "Save as PDF" in the print dialog');
     setTimeout(function () { window.print(); }, 250);
   });
 
-  /* ---------- Toolbar ---------- */
+  /* ---------- Preview Studio Toolbar ---------- */
   function renderTools() {
     var tg = $("tplGrp"), cg = $("colGrp"), fg = $("fontGrp");
-    tg.innerHTML = '<span class="lab">Layout</span>'; cg.innerHTML = '<span class="lab">Color</span>'; fg.innerHTML = '<span class="lab">Font</span>';
-    TEMPLATES.forEach(function (t) { tg.insertAdjacentHTML("beforeend", '<button type="button" class="btn sm" data-tpl="' + t[0] + '" aria-pressed="' + (state.template === t[0]) + '">' + t[1] + "</button>"); });
-    COLORS.forEach(function (c) { cg.insertAdjacentHTML("beforeend", '<button type="button" class="sw" data-col="' + c[0] + '" style="background:' + c[0] + '" aria-label="' + c[1] + '" aria-pressed="' + (state.accent === c[0]) + '"></button>'); });
-    FONTS.forEach(function (f) { fg.insertAdjacentHTML("beforeend", '<button type="button" class="btn sm" data-font="' + f[0] + '" aria-pressed="' + (state.font === f[0]) + '">' + f[1] + "</button>"); });
+    tg.innerHTML = '<span class="tool-label">Layout</span><div class="seg-group" id="tplSeg"></div>';
+    cg.innerHTML = '<span class="tool-label">Accent</span><div class="swatches" id="colSwatches"></div>';
+    fg.innerHTML = '<span class="tool-label">Type</span><div class="seg-group" id="fontSeg"></div>';
+
+    var tplSeg = $("tplSeg"), colSw = $("colSwatches"), fontSeg = $("fontSeg");
+    TEMPLATES.forEach(function (t) {
+      tplSeg.insertAdjacentHTML("beforeend", '<button type="button" class="seg-btn" data-tpl="' + t[0] + '" aria-pressed="' + (state.template === t[0]) + '">' + t[1] + "</button>");
+    });
+    COLORS.forEach(function (c) {
+      colSw.insertAdjacentHTML("beforeend", '<button type="button" class="sw" data-col="' + c[0] + '" style="background:' + c[0] + '" title="' + c[1] + '" aria-label="' + c[1] + '" aria-pressed="' + (state.accent === c[0]) + '"></button>');
+    });
+    FONTS.forEach(function (f) {
+      fontSeg.insertAdjacentHTML("beforeend", '<button type="button" class="seg-btn" data-font="' + f[0] + '" aria-pressed="' + (state.font === f[0]) + '">' + f[1] + "</button>");
+    });
   }
+
   $("previewPane").addEventListener("click", function (e) {
     var t = e.target.closest("[data-tpl],[data-col],[data-font]");
     if (!t) return;
@@ -829,10 +2580,11 @@ input[aria-invalid="true"] { border-color: var(--warn); }
     renderTools(); update();
   });
 
-  /* ---------- Mobile tabs ---------- */
+  /* ---------- Mobile Tabs ---------- */
   function setView(v) {
-    var m = $("main"); m.className = v === "edit" ? "show-edit" : "show-preview";
-    $("tabEdit").classList.toggle("on", v === "edit"); $("tabPreview").classList.toggle("on", v !== "edit");
+    var m = $("main"); m.className = "workspace " + (v === "edit" ? "show-edit" : "show-preview");
+    $("tabEdit").classList.toggle("on", v === "edit");
+    $("tabPreview").classList.toggle("on", v !== "edit");
     fit();
   }
   $("tabEdit").addEventListener("click", function () { setView("edit"); });
@@ -854,6 +2606,5 @@ input[aria-invalid="true"] { border-color: var(--warn); }
   renderNav(); renderPanel(); renderTools(); renderPreview();
 })();
 </script>
-
 </body>
 </html>
